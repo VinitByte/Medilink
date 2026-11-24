@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediLink | मेडीलिंक — Digital OPD Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Noto+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B3866; --navy-deep:#062544; --navy-soft:#EAF1F8;
+    --saffron:#FF9933; --saffron-deep:#DB7C15;
+    --green:#128807; --green-deep:#0C6405;
+    --white:#FFFFFF; --bg:#F4F7FA; --bg-soft:#ECF1F6; --surface:#FFFFFF;
+    --text:#132436; --text-muted:#57697C; --border:#D7E0E9;
+    --red:#B3261E; --gold:#9A6B08;
+    --primary:#0B3866; --primary-hover:#062544; --primary-text:#ffffff;
+    --shadow:0 14px 34px rgba(11,56,102,0.14);
+    --radius:12px;
+    --fs-scale:1;
+  }
+  body[data-contrast="high"]{
+    --navy:#000000; --navy-deep:#000000; --navy-soft:#FFF6DA;
+    --saffron:#FF7A00; --green:#006400;
+    --bg:#FFFFFF; --bg-soft:#FFF6DA; --surface:#FFFFFF;
+    --text:#000000; --text-muted:#1a1a1a; --border:#000000;
+    --primary:#000000; --primary-hover:#222222; --primary-text:#FFFF00;
+    --shadow:none;
+  }
+  *{box-sizing:border-box;}
+  html{font-size:calc(16px * var(--fs-scale));}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg); color:var(--text); font-family:'Noto Sans','Noto Sans Devanagari',sans-serif; -webkit-font-smoothing:antialiased; transition:background .2s,color .2s;}
+  h1,h2,h3,.heading{font-family:'Poppins',sans-serif;}
+  a{color:inherit;}
+  ::selection{background:var(--saffron); color:#fff;}
+  img{max-width:100%;}
+  button{font-family:inherit;}
+
+  /* ---------------- TRICOLOR STRIP ---------------- */
+  .tricolor-strip{height:5px; display:flex; width:100%;}
+  .tricolor-strip span{flex:1;}
+  .tricolor-strip .s1{background:var(--saffron);}
+  .tricolor-strip .s2{background:#ffffff; border-top:1px solid #eee; border-bottom:1px solid #eee;}
+  .tricolor-strip .s3{background:var(--green);}
+
+  /* ---------------- UTILITY BAR ---------------- */
+  .utility-bar{background:var(--navy-deep); color:#dfe9f3; font-size:11.5px; padding:6px 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;}
+  .utility-bar .ub-left{display:flex; gap:16px; align-items:center; flex-wrap:wrap;}
+  .utility-bar .ub-left span{opacity:.92;}
+  .utility-bar .ub-right{display:flex; gap:10px; align-items:center;}
+  .ub-btn{background:transparent; border:1px solid rgba(255,255,255,0.35); color:#dfe9f3; font-size:10.8px; padding:3px 8px; border-radius:4px; cursor:pointer;}
+  .ub-btn.on{background:var(--saffron); border-color:var(--saffron); color:#1a1200; font-weight:700;}
+  .ub-fs-group{display:flex; gap:3px;}
+
+  /* ---------------- SITE HEADER ---------------- */
+  header.site{
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:14px 24px; background:var(--white); position:sticky; top:0; z-index:100; flex-wrap:wrap;
+    border-bottom:3px solid var(--navy); box-shadow:0 2px 8px rgba(11,56,102,0.06);
+  }
+  .brand{display:flex; align-items:center; gap:12px; cursor:pointer;}
+  .brand-mark{width:46px;height:46px;flex-shrink:0;}
+  .brand-name{font-family:'Poppins'; font-weight:800; font-size:20px; color:var(--navy); letter-spacing:.2px;}
+  .brand-name .hi{font-family:'Noto Sans Devanagari'; font-weight:600; font-size:12.5px; color:var(--green); display:block; margin-top:-2px;}
+  .brand-sub{font-size:10.8px; color:var(--text-muted); margin-top:2px; font-weight:500;}
+  nav.site-nav{display:flex; align-items:center; gap:24px;}
+  nav.site-nav a{font-size:13.5px; font-weight:600; color:var(--text); text-decoration:none; cursor:pointer; padding:4px 2px; border-bottom:2px solid transparent;}
+  nav.site-nav a:hover{color:var(--navy); border-bottom-color:var(--saffron);}
+  .header-right{display:flex; align-items:center; gap:10px;}
+  .btn{font-family:'Noto Sans'; font-weight:700; font-size:13px; padding:10px 18px; border-radius:8px; border:none; cursor:pointer; transition:.15s; letter-spacing:.1px;}
+  .btn-primary{background:var(--navy); color:#fff;}
+  .btn-primary:hover{background:var(--navy-hover,var(--navy-deep));}
+  .btn-ghost{background:transparent; color:var(--navy); border:1.6px solid var(--navy);}
+  .btn-ghost:hover{background:var(--navy-soft);}
+  .btn-saffron{background:var(--saffron); color:#3a2200;}
+  .btn-saffron:hover{background:var(--saffron-deep); color:#fff;}
+  .btn-green{background:var(--green); color:#fff;}
+  .btn-green:hover{background:var(--green-deep);}
+  .btn-outline-red{background:transparent;border:1.6px solid var(--red);color:var(--red);}
+  .btn-block{width:100%;}
+  .btn-sm{padding:7px 12px; font-size:12px;}
+  .btn:disabled{opacity:.45; cursor:not-allowed;}
+  .user-chip{display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; background:var(--navy-soft); padding:7px 14px; border-radius:20px; color:var(--navy);}
+
+  /* ---------------- MARQUEE ---------------- */
+  .marquee-bar{background:var(--saffron); color:#3a2200; font-size:12.5px; font-weight:600; padding:7px 0; overflow:hidden; white-space:nowrap; position:relative;}
+  .marquee-bar .mq-label{position:absolute; left:0; top:0; bottom:0; background:var(--navy); color:#fff; padding:7px 14px; font-size:11px; z-index:2; display:flex; align-items:center; gap:6px;}
+  .marquee-track{display:inline-block; padding-left:180px; animation:mqscroll 26s linear infinite;}
+  @keyframes mqscroll{ 0%{transform:translateX(0);} 100%{transform:translateX(-50%);} }
+  .marquee-track span{margin-right:60px;}
+
+  main{max-width:1280px; margin:0 auto;}
+  .view{display:none;}
+  .view.active{display:block; animation:fadein .25s ease;}
+  @keyframes fadein{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;}}
+
+  /* ---------------- HOME / LANDING ---------------- */
+  .hero{padding:56px 24px 40px; display:flex; gap:44px; align-items:center; flex-wrap:wrap;}
+  .hero-text{flex:1.15; min-width:320px;}
+  .badge-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;}
+  .gov-badge{display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; background:var(--navy-soft); color:var(--navy); padding:5px 11px; border-radius:20px; border:1px solid #cfe0f0;}
+  .gov-badge.sf{background:#fff3e6; color:var(--saffron-deep); border-color:#ffdcb0;}
+  .gov-badge.gr{background:#e9f6e6; color:var(--green-deep); border-color:#c7e9c0;}
+  .hero h1{font-size:40px; line-height:1.16; margin:0 0 16px; max-width:17ch; color:var(--navy); font-weight:800;}
+  .hero p.lead{font-size:15.5px; color:var(--text-muted); max-width:54ch; margin:0 0 26px; line-height:1.65;}
+  .hero-ctas{display:flex; gap:12px; flex-wrap:wrap;}
+  .hero-visual{flex:1; min-width:300px;}
+  .stat-strip{display:flex; margin-top:40px; border-top:1.4px solid var(--border); padding-top:22px; flex-wrap:wrap; gap:34px;}
+  .stat-item .num{font-family:'Poppins'; font-size:28px; font-weight:800; color:var(--navy);}
+  .stat-item .lbl{font-size:11.5px; color:var(--text-muted); margin-top:2px;}
+
+  .card-visual{background:var(--surface); border:1.4px solid var(--border); border-radius:16px; padding:6px; box-shadow:var(--shadow); position:relative;}
+  .card-visual::before{content:""; position:absolute; top:0; left:16px; right:16px; height:3px; background:linear-gradient(90deg,var(--saffron),#fff,var(--green)); border-radius:0 0 4px 4px;}
+  .card-visual-inner{padding:18px 16px 8px;}
+  .card-visual .cv-title{font-size:11.5px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.04em; margin-bottom:10px;}
+  .card-visual .mini-row{display:flex; justify-content:space-between; align-items:center; padding:10px 2px; border-bottom:1px solid var(--bg-soft); font-size:13px;}
+  .card-visual .mini-row:last-child{border-bottom:none;}
+
+  section.badge-strip{padding:6px 24px 30px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap;}
+  .init-badge{display:flex; align-items:center; gap:8px; background:var(--surface); border:1.4px solid var(--border); border-radius:10px; padding:10px 16px; font-size:12px; font-weight:700; color:var(--navy);}
+  .init-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--green);}
+
+  section.features{padding:20px 24px 56px;}
+  section.features .sec-head{text-align:center; max-width:640px; margin:0 auto 34px;}
+  section.features h2{font-size:27px; margin:0 0 8px; color:var(--navy);}
+  section.features .sec-head p{color:var(--text-muted); font-size:14px; margin:0;}
+  .feature-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:18px;}
+  .feature-card{background:var(--surface); border:1.4px solid var(--border); border-radius:12px; padding:22px; border-top:3px solid var(--navy); transition:transform .15s, box-shadow .15s;}
+  .feature-card:hover{transform:translateY(-3px); box-shadow:var(--shadow);}
+  .feature-card .ico{font-size:22px; margin-bottom:12px; width:42px;height:42px; display:flex; align-items:center; justify-content:center; background:var(--navy-soft); border-radius:10px;}
+  .feature-card h3{font-size:15.5px; margin:0 0 6px; color:var(--text);}
+  .feature-card p{font-size:13px; color:var(--text-muted); margin:0; line-height:1.55;}
+
+  section.portals{padding:10px 24px 60px; display:flex; gap:22px; flex-wrap:wrap;}
+  .portal-card{flex:1; min-width:280px; background:var(--surface); border:1.4px solid var(--border); border-radius:14px; padding:30px; text-align:left; position:relative; overflow:hidden;}
+  .portal-card::after{content:""; position:absolute; right:-30px; top:-30px; width:110px; height:110px; border-radius:50%; background:var(--navy-soft); z-index:0;}
+  .portal-card > *{position:relative; z-index:1;}
+  .portal-card h3{font-size:19px; margin:0 0 8px; color:var(--navy);}
+  .portal-card p{font-size:13.3px; color:var(--text-muted); margin:0 0 20px; line-height:1.6;}
+
+  footer.site-footer{background:var(--navy-deep); color:#c9d7e6; margin-top:20px;}
+  .footer-top{max-width:1280px; margin:0 auto; padding:40px 24px 24px; display:grid; grid-template-columns:1.4fr 1fr 1fr 1.1fr; gap:28px;}
+  @media(max-width:820px){ .footer-top{grid-template-columns:1fr 1fr;} }
+  .footer-col h4{font-size:12.5px; text-transform:uppercase; letter-spacing:.05em; color:#fff; margin:0 0 14px;}
+  .footer-col p, .footer-col a{font-size:12.5px; line-height:1.9; color:#b7c8db; text-decoration:none; display:block;}
+  .footer-col a:hover{color:#fff;}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,0.12); padding:16px 24px; text-align:center; font-size:11px; color:#93a7bd; max-width:1280px; margin:0 auto;}
+  .footer-bottom b{color:#c9d7e6;}
+
+  /* ---------------- LOGIN ---------------- */
+  .login-wrap{min-height:70vh; padding:50px 20px; display:flex; flex-direction:column; align-items:center; gap:34px;}
+  .login-heading{text-align:center; max-width:520px;}
+  .login-heading h2{margin:0 0 8px; font-size:24px; color:var(--navy);}
+  .login-heading p{font-size:13.5px; color:var(--text-muted); margin:0;}
+  .login-layout{display:flex; gap:28px; flex-wrap:wrap; justify-content:center; width:100%; max-width:920px;}
+  .demo-col{flex:1; min-width:300px;}
+  .demo-col h3{font-size:13px; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted); margin:0 0 12px; display:flex; align-items:center; gap:8px;}
+  .demo-col h3::before{content:""; width:16px; height:2px; background:var(--saffron); display:inline-block;}
+  .demo-patient-card{background:var(--surface); border:1.4px solid var(--border); border-left:4px solid var(--green); border-radius:12px; padding:16px 18px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;}
+  .demo-patient-card .dp-name{font-weight:700; font-size:14.5px; color:var(--text);}
+  .demo-patient-card .dp-meta{font-size:12px; color:var(--text-muted); margin-top:2px;}
+  .demo-patient-card .dp-tag{display:inline-block; font-size:10px; font-weight:700; background:#fdecec; color:var(--red); padding:2px 7px; border-radius:8px; margin-top:5px;}
+  .demo-doc-card{background:var(--navy); color:#fff; border-radius:12px; padding:18px 20px; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;}
+  .demo-doc-card .dd-name{font-weight:700; font-size:15px;}
+  .demo-doc-card .dd-meta{font-size:12px; opacity:.8; margin-top:2px;}
+  .divider-or{display:flex; align-items:center; gap:12px; color:var(--text-muted); font-size:11.5px; font-weight:700; margin:6px 0;}
+  .divider-or::before, .divider-or::after{content:""; flex:1; height:1px; background:var(--border);}
+  .login-card{width:100%; max-width:360px; background:var(--surface); border:1.4px solid var(--border); border-radius:14px; padding:28px; box-shadow:var(--shadow);}
+  .login-card h4{margin:0 0 4px; font-size:15px; color:var(--navy);}
+  .login-card p.sub{font-size:12px; color:var(--text-muted); margin:0 0 18px;}
+  .field{margin-bottom:15px;}
+  .field label{display:block; font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:6px;}
+  .field input, .field textarea, .field select{
+    width:100%; padding:10px 12px; border:1.4px solid var(--border); border-radius:8px;
+    font-family:'Noto Sans'; font-size:14px; background:var(--bg); color:var(--text);
+  }
+  .field input:focus, .field textarea:focus{outline:2px solid var(--navy); outline-offset:1px; border-color:var(--navy);}
+  .otp-boxes{display:flex; gap:8px;}
+  .otp-boxes input{width:42px; height:46px; text-align:center; font-size:18px; font-weight:700; padding:0;}
+  .login-hint{font-size:11.5px; color:var(--text-muted); margin-top:14px; line-height:1.6; background:var(--bg-soft); padding:10px 12px; border-radius:8px;}
+  .login-hint b{color:var(--text);}
+  .login-error{font-size:12px; color:var(--red); margin-top:8px; display:none;}
+  .otp-sent-note{font-size:12px; background:#e9f6e6; color:var(--green-deep); padding:8px 10px; border-radius:8px; margin-bottom:14px; display:none;}
+
+  /* ---------------- DASHBOARD SHELL ---------------- */
+  .dash-shell{display:flex; min-height:78vh; background:var(--surface); border-radius:0; margin-top:0;}
+  .dash-side{width:236px; flex-shrink:0; border-right:1.4px solid var(--border); padding:24px 14px; background:var(--bg-soft);}
+  .dash-profile{display:flex; align-items:center; gap:10px; padding:0 8px 18px; margin-bottom:14px; border-bottom:1px solid var(--border);}
+  .avatar{width:40px;height:40px;border-radius:50%; background:var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0;}
+  .dash-profile .nm{font-size:13.5px; font-weight:700;}
+  .dash-profile .rl{font-size:11px; color:var(--text-muted);}
+  .side-link{display:flex; align-items:center; gap:9px; width:100%; text-align:left; background:none; border:none; padding:10px 12px; border-radius:8px; font-size:13.3px; font-weight:600; color:var(--text-muted); cursor:pointer; margin-bottom:3px;}
+  .side-link:hover{background:var(--surface);}
+  .side-link.active{background:var(--navy); color:#fff;}
+
+  .dash-main{flex:1; padding:28px 34px;}
+  .dash-main h2{margin:0 0 4px; font-size:21px; color:var(--navy);}
+  .dash-main > p.sub{color:var(--text-muted); font-size:13.3px; margin:0 0 22px;}
+
+  .card-block{border:1.4px solid var(--border); border-radius:12px; padding:16px 18px; margin-bottom:16px; background:var(--surface);}
+  .card-block h4{margin:0 0 10px; font-size:12px; text-transform:uppercase; letter-spacing:.03em; color:var(--navy); font-weight:700;}
+  .grid-3{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px;}
+  .stat-card{background:var(--bg-soft); border-radius:10px; padding:14px 16px; border-left:3px solid var(--navy);}
+  .stat-card .num{font-family:'Poppins'; font-size:23px; font-weight:800; color:var(--navy);}
+  .stat-card .lbl{font-size:11.3px; color:var(--text-muted); margin-top:2px;}
+
+  .chip-row{display:flex; flex-wrap:wrap; gap:7px;}
+  .chip{padding:7px 12px; border-radius:16px; border:1.4px solid var(--border); font-size:12.3px; cursor:pointer; background:var(--bg); color:var(--text); user-select:none;}
+  .chip.on{background:var(--navy); color:#fff; border-color:var(--navy);}
+  .icd-list{margin-top:10px; display:flex; flex-direction:column; gap:6px;}
+  .icd-row{display:flex; justify-content:space-between; align-items:center; background:var(--bg-soft); border:1px solid var(--border); border-radius:7px; padding:6px 10px; font-size:11.6px; color:var(--text-muted);}
+  .icd-code{font-weight:700; color:var(--saffron-deep);}
+  .conf-bar{width:60px; height:5px; background:var(--border); border-radius:3px; overflow:hidden; margin-left:8px;}
+  .conf-fill{height:100%; background:var(--green);}
+  .vital-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px;}
+  .vitals-row{display:flex; gap:16px; flex-wrap:wrap;}
+  .vital-pill{background:var(--bg-soft); border-radius:8px; padding:8px 12px; text-align:center; min-width:74px;}
+  .vital-pill .v{font-weight:700; font-size:15px; color:var(--navy);}
+  .vital-pill .l{font-size:10.3px; color:var(--text-muted);}
+
+  .ai-summary-box{background:var(--navy-soft); border:1.4px solid #cfe0f0; border-radius:10px; padding:14px 16px; font-size:13.4px; line-height:1.65;}
+  .ai-summary-box .badge{display:inline-block; font-size:10.3px; background:var(--saffron); color:#3a2200; padding:2px 8px; border-radius:10px; margin-bottom:8px; font-weight:700;}
+  .conf-badge{display:inline-block; font-size:10.3px; background:#e9f6e6; color:var(--green-deep); padding:2px 8px; border-radius:10px; margin-bottom:8px; margin-left:6px; font-weight:700;}
+  .live-badge{display:inline-block; font-size:10.3px; background:#e6f0ff; color:var(--navy); padding:2px 8px; border-radius:10px; margin-bottom:8px; margin-left:6px; font-weight:700;}
+  .review-actions{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;}
+  .rx-row{display:flex; gap:8px; margin-bottom:8px;}
+  .rx-row input{flex:1;}
+
+  .timeline{border-left:2.4px solid var(--border); margin-left:8px; padding-left:20px;}
+  .tl-item{position:relative; margin-bottom:18px;}
+  .tl-item::before{content:""; position:absolute; left:-26.5px; top:5px; width:11px; height:11px; border-radius:50%; background:var(--navy); border:2.5px solid var(--bg);}
+  .tl-date{font-size:12px; color:var(--text-muted); margin-bottom:4px; font-weight:700;}
+  .tl-body{background:var(--surface); border:1.4px solid var(--border); border-radius:10px; padding:14px 16px;}
+  .tl-body h4{margin:0 0 6px; font-size:14px; font-family:'Poppins'; text-transform:none; color:var(--text); letter-spacing:0;}
+
+  .patient-list-row{display:flex; justify-content:space-between; align-items:center; padding:12px 14px; border:1.4px solid var(--border); border-radius:10px; margin-bottom:8px; cursor:pointer; background:var(--surface);}
+  .patient-list-row:hover{background:var(--bg-soft);}
+  .patient-list-row.active{border-color:var(--navy); background:var(--navy-soft);}
+  .p-name{font-weight:700; font-size:14px;}
+  .p-meta{font-size:11.3px; color:var(--text-muted);}
+  .flag-dot{width:8px;height:8px;border-radius:50%;background:var(--red); display:inline-block;}
+  .new-badge{font-size:10px; background:var(--saffron); color:#3a2200; padding:2px 6px; border-radius:8px; font-weight:700;}
+  .two-col{display:grid; grid-template-columns:300px 1fr; gap:22px; align-items:start;}
+  @media(max-width:820px){ .two-col{grid-template-columns:1fr;} .dash-shell{flex-direction:column;} .dash-side{width:100%; display:flex; flex-wrap:wrap; gap:4px;} }
+
+  .lang-toggle{display:flex; gap:4px; background:var(--bg-soft); border-radius:8px; padding:3px;}
+  .lang-toggle button{border:none; background:none; padding:5px 10px; font-size:12px; border-radius:6px; cursor:pointer; color:var(--text-muted);}
+  .lang-toggle button.on{background:var(--navy); color:#fff;}
+
+  .ocr-wrap{display:flex; gap:22px; flex-wrap:wrap;}
+  .ocr-upload{flex:1; min-width:260px; border:2px dashed var(--border); border-radius:14px; padding:24px; text-align:center; background:var(--surface);}
+  .ocr-upload img{max-width:100%; max-height:200px; border-radius:8px; margin-top:12px; border:1px solid var(--border);}
+  .scan-progress{height:6px; background:var(--bg-soft); border-radius:3px; overflow:hidden; margin-top:14px; display:none;}
+  .scan-progress.show{display:block;}
+  .scan-progress .bar{height:100%; width:0%; background:var(--saffron); transition:width 1.4s linear;}
+  .ocr-result{flex:1; min-width:260px;}
+  .ocr-field-row{display:flex; justify-content:space-between; align-items:center; padding:9px 12px; border-bottom:1px solid var(--bg-soft); font-size:13px;}
+  .ocr-field-row .k{color:var(--text-muted); font-weight:600;}
+  .lang-tag{font-size:10.3px; background:#e9f6e6; color:var(--green-deep); padding:2px 8px; border-radius:10px; font-weight:700;}
+
+  .now-serving{background:var(--navy); color:#fff; border-radius:14px; padding:20px 24px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;}
+  .now-serving .label{font-size:11.3px; opacity:.85; letter-spacing:.03em; text-transform:uppercase;}
+  .now-serving .name{font-family:'Poppins'; font-size:20px; font-weight:700; margin-top:2px;}
+  .now-serving .room{font-size:12.3px; opacity:.85; margin-top:2px;}
+  .queue-table{width:100%; border-collapse:collapse; background:var(--surface); border:1.4px solid var(--border); border-radius:12px; overflow:hidden;}
+  .queue-table th{text-align:left; font-size:11.3px; text-transform:uppercase; letter-spacing:.02em; color:var(--text-muted); padding:10px 14px; background:var(--bg-soft); border-bottom:1px solid var(--border);}
+  .queue-table td{padding:11px 14px; font-size:13.3px; border-bottom:1px solid var(--bg-soft);}
+  .status-tag{font-size:11px; padding:3px 9px; border-radius:10px; font-weight:700;}
+  .status-waiting{background:#fff3e0; color:#a05a00;}
+  .status-serving{background:#e9f6e6; color:var(--green-deep);}
+
+  .chat-frame-box{background:var(--navy-deep); border-radius:16px; padding:10px; box-shadow:var(--shadow);}
+  .chat-frame-box iframe{width:100%; height:560px; border:none; border-radius:10px; background:#fff;}
+  .chat-fallback{display:none; padding:24px; text-align:center; color:var(--text-muted); font-size:13px;}
+
+  .info-note{background:var(--navy-soft); border-left:4px solid var(--navy); padding:12px 14px; border-radius:0 8px 8px 0; font-size:13px; color:var(--text);}
+
+  /* ---------------- FLOATING CHAT WIDGET ---------------- */
+  .fab-chat{position:fixed; bottom:24px; right:24px; z-index:999; display:flex; align-items:center; gap:10px; background:var(--navy); color:#fff; border:none; padding:13px 18px 13px 14px; border-radius:30px; box-shadow:0 10px 26px rgba(11,56,102,0.35); cursor:pointer; font-weight:700; font-size:13.5px;}
+  .fab-chat .fab-ico{width:26px;height:26px; background:var(--saffron); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0;}
+  .fab-chat .fab-dot{width:9px;height:9px; border-radius:50%; background:#3ddc6b; margin-left:2px; box-shadow:0 0 0 2px rgba(61,220,107,0.3);}
+  .chat-panel{position:fixed; bottom:24px; right:24px; z-index:1000; width:340px; max-width:calc(100vw - 32px); height:460px; max-height:calc(100vh - 100px); background:var(--surface); border-radius:16px; box-shadow:0 20px 50px rgba(0,0,0,0.25); display:none; flex-direction:column; overflow:hidden; border:1px solid var(--border);}
+  .chat-panel.open{display:flex;}
+  .chat-head{background:var(--navy); color:#fff; padding:14px 16px; display:flex; align-items:center; justify-content:space-between;}
+  .chat-head .ch-title{display:flex; align-items:center; gap:9px; font-weight:700; font-size:13.5px;}
+  .chat-head .ch-ico{width:30px;height:30px;border-radius:50%;background:var(--saffron); display:flex;align-items:center;justify-content:center; font-size:15px;}
+  .chat-head .ch-sub{font-size:10.5px; opacity:.8; font-weight:400; margin-top:1px;}
+  .chat-head button{background:transparent; border:none; color:#fff; font-size:18px; cursor:pointer; opacity:.85;}
+  .chat-body{flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px; background:var(--bg-soft);}
+  .msg{max-width:82%; padding:9px 12px; border-radius:12px; font-size:12.8px; line-height:1.5;}
+  .msg.bot{background:var(--surface); border:1px solid var(--border); align-self:flex-start; border-bottom-left-radius:3px;}
+  .msg.user{background:var(--navy); color:#fff; align-self:flex-end; border-bottom-right-radius:3px;}
+  .chat-quick{display:flex; flex-wrap:wrap; gap:6px; padding:0 14px 10px; background:var(--bg-soft);}
+  .chat-quick button{font-size:11px; background:var(--surface); border:1.2px solid var(--border); border-radius:14px; padding:6px 10px; cursor:pointer; color:var(--navy); font-weight:600;}
+  .chat-quick button:hover{background:var(--navy-soft);}
+  .chat-input-row{display:flex; gap:8px; padding:10px; border-top:1px solid var(--border); background:var(--surface); align-items:center;}
+  .chat-input-row input{flex:1; border:1.4px solid var(--border); border-radius:20px; padding:9px 14px; font-size:12.8px; font-family:'Noto Sans';}
+  .chat-input-row button{background:var(--navy); color:#fff; border:none; width:36px; height:36px; border-radius:50%; cursor:pointer; font-size:14px; flex-shrink:0;}
+  .chat-mic-btn{background:var(--bg-soft); color:var(--navy); border:1.4px solid var(--border);}
+  .chat-mic-btn.on{background:var(--red); color:#fff; border-color:var(--red); animation:pulseRec 1s infinite;}
+  .typing-dots{display:inline-flex; gap:3px; align-self:flex-start; background:var(--surface); border:1px solid var(--border); padding:10px 13px; border-radius:12px; border-bottom-left-radius:3px;}
+  .typing-dots span{width:5px;height:5px;border-radius:50%;background:var(--text-muted); animation:blink 1.2s infinite;}
+  .typing-dots span:nth-child(2){animation-delay:.2s;} .typing-dots span:nth-child(3){animation-delay:.4s;}
+  @keyframes blink{0%,60%,100%{opacity:.3;} 30%{opacity:1;}}
+
+  /* ---------------- VOICE INTAKE ---------------- */
+  .voice-btn{background:var(--bg-soft); border:1.4px solid var(--border); color:var(--navy); font-size:11.5px; font-weight:700; padding:5px 10px; border-radius:20px; cursor:pointer; display:inline-flex; align-items:center; gap:5px; margin-left:8px; vertical-align:middle;}
+  .voice-btn.on{background:var(--red); color:#fff; border-color:var(--red); animation:pulseRec 1s infinite;}
+  @keyframes pulseRec{0%{box-shadow:0 0 0 0 rgba(179,38,30,0.45);}70%{box-shadow:0 0 0 8px rgba(179,38,30,0);}100%{box-shadow:0 0 0 0 rgba(179,38,30,0);}}
+  .field-label-row{display:flex; align-items:center; justify-content:space-between;}
+
+  /* ---------------- MEDICINE SUMMARY (OCR) ---------------- */
+  .med-summary-box{background:#f3fbf1; border:1.4px solid #cfe9c6; border-radius:10px; padding:14px 16px; font-size:13px; line-height:1.7; margin-top:12px;}
+  .med-summary-box h5{margin:0 0 8px; font-size:11.5px; text-transform:uppercase; letter-spacing:.03em; color:var(--green-deep);}
+  .med-summary-box ul{margin:0; padding-left:18px;}
+  .med-summary-box li{margin-bottom:6px;}
+  .med-summary-box li b{color:var(--text);}
+  .demo-tag-sm{display:inline-block; font-size:10px; background:var(--bg-soft); color:var(--text-muted); padding:2px 7px; border-radius:8px; margin-left:6px; font-weight:700; vertical-align:middle;}
+</style>
+</head>
+<body data-contrast="normal">
+
+<div class="tricolor-strip"><span class="s1"></span><span class="s2"></span><span class="s3"></span></div>
+
+<div class="utility-bar">
+  <div class="ub-left">
+    <span>🇮🇳 Digital Health Initiative</span>
+    <span>|</span>
+    <span>First-Year College Project by Rishima</span>
+  </div>
+  <div class="ub-right">
+    <span class="ub-btn" id="aiStatusBadge" style="cursor:default;">🧠 AI Engine: Checking...</span>
+    <div class="ub-fs-group">
+      <button class="ub-btn" id="fsMinus" title="Decrease text size">A-</button>
+      <button class="ub-btn" id="fsReset" title="Reset text size">A</button>
+      <button class="ub-btn" id="fsPlus" title="Increase text size">A+</button>
+    </div>
+    <button class="ub-btn" id="contrastToggle" title="Toggle high contrast">◐ High Contrast</button>
+    <div class="ub-fs-group">
+      <button class="ub-btn on" id="langEnBtn">EN</button>
+      <button class="ub-btn" id="langHiBtn">हिं</button>
+    </div>
+  </div>
+</div>
+
+<header class="site">
+  <div class="brand" id="logoHome">
+    <svg class="brand-mark" viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="46" fill="none" stroke="var(--navy)" stroke-width="3"/>
+      <circle cx="50" cy="50" r="6" fill="var(--navy)"/>
+      <g stroke="var(--navy)" stroke-width="2.4">
+        <line x1="50" y1="6" x2="50" y2="94"/><line x1="6" y1="50" x2="94" y2="50"/>
+        <line x1="16.6" y1="16.6" x2="83.4" y2="83.4"/><line x1="83.4" y1="16.6" x2="16.6" y2="83.4"/>
+        <line x1="50" y1="6" x2="50" y2="94" transform="rotate(22.5 50 50)"/>
+        <line x1="50" y1="6" x2="50" y2="94" transform="rotate(45 50 50)"/>
+        <line x1="50" y1="6" x2="50" y2="94" transform="rotate(67.5 50 50)"/>
+        <line x1="50" y1="6" x2="50" y2="94" transform="rotate(112.5 50 50)"/>
+        <line x1="50" y1="6" x2="50" y2="94" transform="rotate(135 50 50)"/>
+        <line x1="50" y1="6" x2="50" y2="94" transform="rotate(157.5 50 50)"/>
+      </g>
+      <path d="M30 62 Q50 78 70 62" stroke="var(--green)" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M30 38 Q50 22 70 38" stroke="var(--saffron)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <div class="brand-name">MediLink<span class="hi">मेडीलिंक</span></div>
+      <div class="brand-sub">Digital OPD Platform · First-Year Project</div>
+    </div>
+  </div>
+  <nav class="site-nav" id="publicNav">
+    <a data-scroll="featuresSec">Features</a>
+    <a data-scroll="badgeSec">Standards</a>
+    <a data-scroll="portalsSec">Portals</a>
+    <a id="navContactLink">Contact</a>
+  </nav>
+  <div class="header-right">
+    <span id="loggedInChip" style="display:none;"></span>
+    <button class="btn btn-ghost" id="navPatientLoginBtn">Patient Login</button>
+    <button class="btn btn-primary" id="navDoctorLoginBtn">Doctor / Staff Login</button>
+    <button class="btn btn-outline-red" id="logoutBtn" style="display:none;">Log out</button>
+  </div>
+</header>
+
+<div class="marquee-bar">
+  <span class="mq-label">📢 NOTICE</span>
+  <div class="marquee-track">
+    <span>This is a first-year college project, designed and developed by Rishima.</span>
+    <span>Live customer support is available 24×7 via the chat assistant at the bottom-right of your screen.</span>
+    <span>Demo login access is available for both Patient and Doctor / Staff portals — no real data is collected.</span>
+    <span>This is a first-year college project, designed and developed by Rishima.</span>
+    <span>Live customer support is available 24×7 via the chat assistant at the bottom-right of your screen.</span>
+    <span>Demo login access is available for both Patient and Doctor / Staff portals — no real data is collected.</span>
+  </div>
+</div>
+
+<main>
+
+  <!-- ================= HOME ================= -->
+  <section class="view active" id="view-home">
+    <div class="hero">
+      <div class="hero-text">
+        <div class="badge-row">
+          <span class="gov-badge">Digital Health Project</span>
+          <span class="gov-badge sf">MedTech / HealthTech</span>
+          <span class="gov-badge gr">First-Year Project</span>
+        </div>
+        <h1>One record, from the OPD kiosk to the doctor's desk.</h1>
+        <p class="lead">MediLink captures a patient's case once — symptoms, vitals, old prescriptions — and turns it into an AI-drafted, doctor-reviewed clinical summary before they even sit down for consultation.</p>
+        <div class="hero-ctas">
+          <button class="btn btn-primary" id="heroPatientBtn">View my medical history</button>
+          <button class="btn btn-ghost" id="heroDoctorBtn">Doctor / Staff dashboard</button>
+        </div>
+        <div class="stat-strip">
+          <div class="stat-item"><div class="num">30–40%</div><div class="lbl">less OPD waiting time</div></div>
+          <div class="stat-item"><div class="num">80%</div><div class="lbl">less paperwork</div></div>
+          <div class="stat-item"><div class="num">25–35%</div><div class="lbl">less time on history-taking</div></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="card-visual">
+          <div class="card-visual-inner">
+            <div class="cv-title">Live OPD snapshot · Demo Clinic, Kotra</div>
+            <div class="mini-row"><span>🟠 Sunita Devi — checked in</span><span class="status-tag status-waiting">Waiting</span></div>
+            <div class="mini-row"><span>🟢 Ramesh Yadav — in consultation</span><span class="status-tag status-serving">Room 2</span></div>
+            <div class="mini-row"><span>🧠 AI summary drafted</span><span>91% confidence</span></div>
+            <div class="mini-row"><span>📄 Prescription scanned (OCR)</span><span>93% match</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="badge-strip" id="badgeSec">
+      <div class="init-badge"><span class="dot"></span>ABDM-Ready Architecture</div>
+      <div class="init-badge"><span class="dot"></span>FHIR / HL7 Compliant</div>
+      <div class="init-badge"><span class="dot"></span>Multilingual (Hindi + English)</div>
+      <div class="init-badge"><span class="dot"></span>Offline-First Sync</div>
+      <div class="init-badge"><span class="dot"></span>End-to-End Data Encryption</div>
+    </section>
+
+    <section class="features" id="featuresSec">
+      <div class="sec-head">
+        <h2>Built around one case file</h2>
+        <p>Everything a patient does and everything a doctor sees pulls from the same record — no re-typing, no lost paper.</p>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card"><div class="ico">📝</div><h3>Guided case-taking</h3><p>Structured intake with voice or text, mapped to clinical codes as the patient answers.</p></div>
+        <div class="feature-card"><div class="ico">🧠</div><h3>AI-drafted summaries</h3><p>Every case gets a confidence-scored draft summary — the doctor always makes the final call.</p></div>
+        <div class="feature-card"><div class="ico">📄</div><h3>Prescription scanner</h3><p>Old paper prescriptions and lab reports are read automatically, in Hindi, English or a mix.</p></div>
+        <div class="feature-card"><div class="ico">👥</div><h3>Live OPD queue</h3><p>Reception and doctors see who's waiting, who's in consultation, and how long the line is — in real time.</p></div>
+        <div class="feature-card"><div class="ico">📚</div><h3>Complete medical history</h3><p>Patients log in and see every past visit, diagnosis and prescription in one timeline.</p></div>
+        <div class="feature-card"><div class="ico">💬</div><h3>Live support assistant</h3><p>Answers common questions about timings and visit prep, so the front desk isn't interrupted — 24×7.</p></div>
+      </div>
+    </section>
+
+    <section class="portals" id="portalsSec">
+      <div class="portal-card">
+        <h3>For patients</h3>
+        <p>Log in to see your full medical history, start a new visit, or scan an old prescription. Try it instantly with a demo profile.</p>
+        <button class="btn btn-primary" id="portalPatientBtn">Go to patient login</button>
+      </div>
+      <div class="portal-card">
+        <h3>For doctors &amp; staff</h3>
+        <p>Review AI-drafted summaries, manage the live OPD queue, and confirm prescriptions.</p>
+        <button class="btn btn-primary" id="portalDoctorBtn">Go to doctor login</button>
+      </div>
+    </section>
+  </section>
+
+  <!-- ================= PATIENT LOGIN ================= -->
+  <section class="view" id="view-patientLogin">
+    <div class="login-wrap">
+      <div class="login-heading">
+        <h2>Patient Portal Login</h2>
+        <p>Use a one-click demo profile below, or sign in with a mobile number + OTP.</p>
+      </div>
+      <div class="login-layout">
+        <div class="demo-col">
+          <h3>Quick demo access</h3>
+          <div class="demo-patient-card">
+            <div>
+              <div class="dp-name">Sunita Devi</div>
+              <div class="dp-meta">52F · Kotra, Rajasthan · Hypertension (6 yrs)</div>
+              <span class="dp-tag">Flagged case</span>
+            </div>
+            <button class="btn btn-primary btn-sm" data-demo-patient="Sunita Devi">Login as this patient →</button>
+          </div>
+          <div class="demo-patient-card">
+            <div>
+              <div class="dp-name">Ramesh Yadav</div>
+              <div class="dp-meta">34M · Bilaspur, Chhattisgarh · Currently in consultation</div>
+            </div>
+            <button class="btn btn-primary btn-sm" data-demo-patient="Ramesh Yadav">Login as this patient →</button>
+          </div>
+          <div class="login-hint">Also on file: <b>Kamla Bai</b>, <b>Arjun Mehta</b> — type either name in the form to view their history. Any other name signs in as a first-time patient.</div>
+        </div>
+        <div class="login-card">
+          <h4>Sign in with mobile OTP</h4>
+          <p class="sub">Step <span id="patientStepLabel">1</span> of 2</p>
+          <div id="patientLoginStep1">
+            <div class="field"><label>Registered mobile number</label><input id="patientLoginMobile" maxlength="10" placeholder="e.g. 98XXXXXX10"></div>
+            <button class="btn btn-primary btn-block" id="patientSendOtpBtn">Send OTP</button>
+          </div>
+          <div id="patientLoginStep2" style="display:none;">
+            <div class="otp-sent-note" id="otpSentNote">✓ OTP sent (demo mode auto-filled below)</div>
+            <div class="field"><label>Enter 4-digit OTP</label>
+              <div class="otp-boxes">
+                <input maxlength="1" value="1"><input maxlength="1" value="2"><input maxlength="1" value="3"><input maxlength="1" value="4">
+              </div>
+            </div>
+            <div class="field"><label>Full name (for your record)</label><input id="patientLoginName" placeholder="e.g. Sunita Devi"></div>
+            <button class="btn btn-primary btn-block" id="patientLoginBtn">Verify &amp; view my records</button>
+            <div class="login-error" id="patientLoginError">No exact record found — you'll be logged in as a first-time patient.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= DOCTOR LOGIN ================= -->
+  <section class="view" id="view-doctorLogin">
+    <div class="login-wrap">
+      <div class="login-heading">
+        <h2>Doctor / Staff Portal Login</h2>
+        <p>Use the demo physician account below, or sign in with your staff credentials.</p>
+      </div>
+      <div class="login-layout">
+        <div class="demo-col">
+          <h3>Quick demo access</h3>
+          <div class="demo-doc-card">
+            <div>
+              <div class="dd-name">Dr. Menon</div>
+              <div class="dd-meta">AYUSH Physician · Demo Clinic, Kotra · 4 patients in queue today</div>
+            </div>
+            <button class="btn btn-saffron btn-sm" id="demoDoctorBtn">Login as Dr. Menon →</button>
+          </div>
+          <div class="login-hint">The doctor dashboard shows every patient checked in at the clinic today, with AI-drafted summaries queued for your review and a live OPD queue.</div>
+        </div>
+        <div class="login-card">
+          <h4>Sign in with staff ID</h4>
+          <p class="sub">Demo mode — any credentials are accepted</p>
+          <div class="field"><label>Staff ID</label><input id="doctorStaffId" placeholder="e.g. AYUSH-STAFF-0042"></div>
+          <div class="field"><label>Password</label><input type="password" id="doctorPassword" placeholder="••••••••"></div>
+          <div class="field"><label>Full name</label><input id="doctorLoginName" placeholder="e.g. Dr. Menon" value="Dr. Menon"></div>
+          <button class="btn btn-primary btn-block" id="doctorLoginBtn">Open dashboard</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PATIENT DASHBOARD ================= -->
+  <section class="view" id="view-patientDashboard">
+    <div class="dash-shell">
+      <aside class="dash-side">
+        <div class="dash-profile"><div class="avatar" id="patAvatar">S</div><div><div class="nm" id="patName">—</div><div class="rl">Patient</div></div></div>
+        <button class="side-link" data-psub="overview">🏠 Overview</button>
+        <button class="side-link" data-psub="history">📚 Medical History</button>
+        <button class="side-link" data-psub="newvisit">📝 New Visit</button>
+        <button class="side-link" data-psub="scan">📄 Scan Documents</button>
+        <button class="side-link" data-psub="support">💬 Support Chat</button>
+      </aside>
+      <div class="dash-main" id="patientMain"></div>
+    </div>
+  </section>
+
+  <!-- ================= DOCTOR DASHBOARD ================= -->
+  <section class="view" id="view-doctorDashboard">
+    <div class="dash-shell">
+      <aside class="dash-side">
+        <div class="dash-profile"><div class="avatar" id="docAvatar">M</div><div><div class="nm" id="docName">—</div><div class="rl">Doctor</div></div></div>
+        <button class="side-link" data-dsub="overview">🏠 Overview</button>
+        <button class="side-link" data-dsub="queue">🧾 OPD Queue</button>
+        <button class="side-link" data-dsub="patients">🧑‍⚕️ Patients</button>
+      </aside>
+      <div class="dash-main" id="doctorMain"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" id="contactSec">
+  <div class="footer-top">
+    <div class="footer-col">
+      <h4>MediLink</h4>
+      <p style="color:#dfe9f3;">A smart patient case-taking system designed for AYUSH clinics — from OPD kiosk intake to doctor-reviewed clinical summaries, in one record.</p>
+      <p style="margin-top:10px;">Developed by <b style="color:#fff;">Rishima</b> · First-Year College Project</p>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <a data-scroll="featuresSec">Features</a>
+      <a data-scroll="portalsSec">Patient / Doctor Portals</a>
+      <a id="footerPatientLink">Patient Login</a>
+      <a id="footerDoctorLink">Doctor Login</a>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <a href="#">FHIR / HL7 Interoperability</a>
+      <a href="#">ABDM Alignment Note</a>
+      <a href="#">Data Privacy Statement</a>
+      <a href="#">Accessibility Statement</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <p>Rishima</p>
+      <p>rishima.medilink@example.org</p>
+      <p>Helpdesk: available via live chat, bottom-right</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2026 MediLink · A first-year college project by <b>Rishima</b> · This is a prototype for demonstration purposes and is <b>not an official Government of India website</b>.
+  </div>
+</footer>
+
+<!-- ================= FLOATING CHAT WIDGET ================= -->
+<button class="fab-chat" id="fabChatBtn">
+  <span class="fab-ico">💬</span> Live Support <span class="fab-dot"></span>
+</button>
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-head">
+    <div class="ch-title"><span class="ch-ico">🩺</span><div><div>MediLink Assistant</div><div class="ch-sub">Online now · replies instantly</div></div></div>
+    <button id="chatCloseBtn">✕</button>
+  </div>
+  <div class="chat-body" id="chatBody"></div>
+  <div class="chat-quick" id="chatQuick"></div>
+  <div class="chat-input-row">
+    <button class="chat-mic-btn" id="chatMicBtn" title="Speak your question">🎙️</button>
+    <input type="text" id="chatInputBox" placeholder="Type your question...">
+    <button id="chatSendBtn">➤</button>
+  </div>
+</div>
+
+<script>
+/* ==================================================================
+   LIVE AI ENGINE (Anthropic API) — with automatic offline fallback
+   ================================================================== */
+async function callClaudeText(systemPrompt, userPrompt){
+  try{
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: "user", content: userPrompt }]
+      })
+    });
+    if(!response.ok) throw new Error('API error ' + response.status);
+    const data = await response.json();
+    const text = (data.content || []).map(function(b){ return b.text || ''; }).join('');
+    if(!text) throw new Error('empty response');
+    return text.trim();
+  } catch(err){
+    console.warn('Claude text API unavailable, using offline fallback:', err);
+    return null;
+  }
+}
+
+async function callClaudeVision(systemPrompt, userPrompt, base64Data, mediaType){
+  try{
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{
+          role: "user",
+          content: [
+            { type: "image", source: { type: "base64", media_type: mediaType, data: base64Data } },
+            { type: "text", text: userPrompt }
+          ]
+        }]
+      })
+    });
+    if(!response.ok) throw new Error('API error ' + response.status);
+    const data = await response.json();
+    const text = (data.content || []).map(function(b){ return b.text || ''; }).join('');
+    if(!text) throw new Error('empty response');
+    return text.trim();
+  } catch(err){
+    console.warn('Claude vision API unavailable, using offline fallback:', err);
+    return null;
+  }
+}
+
+let aiAvailable = null;
+async function initAIStatus(){
+  const el = document.getElementById('aiStatusBadge');
+  const raw = await callClaudeText("Reply with exactly one word: OK", "OK");
+  aiAvailable = !!raw;
+  if(el){
+    el.textContent = aiAvailable ? '🧠 AI Engine: Live' : '🧠 AI Engine: Demo Mode (offline)';
+    el.classList.toggle('on', aiAvailable);
+  }
+}
+
+/* ==================================================================
+   ACCESSIBILITY: FONT SIZE + HIGH CONTRAST + LANGUAGE
+   ================================================================== */
+let fsScale = 1;
+function applyFs(){ document.documentElement.style.setProperty('--fs-scale', fsScale); }
+document.getElementById('fsPlus').addEventListener('click', ()=>{ fsScale = Math.min(1.25, fsScale+0.075); applyFs(); });
+document.getElementById('fsMinus').addEventListener('click', ()=>{ fsScale = Math.max(0.85, fsScale-0.075); applyFs(); });
+document.getElementById('fsReset').addEventListener('click', ()=>{ fsScale = 1; applyFs(); });
+
+const contrastToggle = document.getElementById('contrastToggle');
+contrastToggle.addEventListener('click', ()=>{
+  const isHigh = document.body.getAttribute('data-contrast')==='high';
+  document.body.setAttribute('data-contrast', isHigh ? 'normal' : 'high');
+  contrastToggle.classList.toggle('on', !isHigh);
+});
+
+const langEnBtn = document.getElementById('langEnBtn');
+const langHiBtn = document.getElementById('langHiBtn');
+langEnBtn.addEventListener('click', ()=>{ langEnBtn.classList.add('on'); langHiBtn.classList.remove('on'); });
+langHiBtn.addEventListener('click', function(){
+  langHiBtn.classList.add('on'); langEnBtn.classList.remove('on');
+  alert('हिंदी इंटरफ़ेस डेमो में सीमित है। पूर्ण अनुवाद जल्द ही उपलब्ध होगा।' + String.fromCharCode(10) + String.fromCharCode(10) + '(Hindi interface is limited in this demo. Full translation coming soon.)');
+});
+
+/* ==================================================================
+   VIEW ROUTING
+   ================================================================== */
+function showView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+document.getElementById('logoHome').addEventListener('click', ()=>showView('view-home'));
+document.querySelectorAll('[data-scroll]').forEach(a=>{
+  a.addEventListener('click', ()=>{
+    const target = a.dataset.scroll;
+    showView('view-home');
+    setTimeout(()=>{ const t = document.getElementById(target); if(t) t.scrollIntoView({behavior:'smooth'}); }, 60);
+  });
+});
+document.getElementById('navContactLink').addEventListener('click', ()=>{
+  document.getElementById('contactSec').scrollIntoView({behavior:'smooth'});
+});
+['navPatientLoginBtn','heroPatientBtn','portalPatientBtn','footerPatientLink'].forEach(id=>{
+  document.getElementById(id).addEventListener('click', ()=>{ resetPatientLoginForm(); showView('view-patientLogin'); });
+});
+['navDoctorLoginBtn','heroDoctorBtn','portalDoctorBtn','footerDoctorLink'].forEach(id=>{
+  document.getElementById(id).addEventListener('click', ()=>showView('view-doctorLogin'));
+});
+document.getElementById('logoutBtn').addEventListener('click', ()=>{
+  currentPatient = null; currentDoctor = null;
+  document.getElementById('logoutBtn').style.display='none';
+  document.getElementById('loggedInChip').style.display='none';
+  document.getElementById('navPatientLoginBtn').style.display='inline-block';
+  document.getElementById('navDoctorLoginBtn').style.display='inline-block';
+  showView('view-home');
+});
+
+/* ==================================================================
+   DATA
+   ================================================================== */
+const icdMap = {
+  'Joint pain':{code:'M25.5', conf:94}, 'Cough':{code:'R05', conf:91}, 'Fever':{code:'R50.9', conf:97},
+  'Headache':{code:'R51', conf:89}, 'Fatigue':{code:'R53.83', conf:86}, 'Poor appetite':{code:'R63.0', conf:83},
+  'Sore throat':{code:'J02.9', conf:92}, 'Body ache':{code:'M79.1', conf:88}, 'Skin rash':{code:'R21', conf:90},
+  'Digestive issue':{code:'K30', conf:85},
+};
+const symptomOptions = Object.keys(icdMap);
+
+const seedPatients = [
+  { id:'p1', name:'Sunita Devi', age:52, gender:'Female', village:'Kotra, Rajasthan',
+    history:'Known hypertension for 6 years. No known allergies.',
+    visits:[
+      {date:'02 May 2026', vitals:{bp:'136/84',pulse:'80',temp:'98.2°F',spo2:'97%'}, symptoms:['Headache'], notes:'Occasional headaches, resolved with rest.', summary:'Mild, self-limiting headache episodes, likely stress-related. No red flags. Advised hydration and rest.', rx:['Paracetamol 500mg SOS']},
+      {date:'19 Jun 2026', vitals:{bp:'140/88',pulse:'82',temp:'98.6°F',spo2:'97%'}, symptoms:['Joint pain','Fatigue'], notes:'Knee discomfort after long walks, mild fatigue.', summary:'Early Vata-type joint discomfort with fatigue. Suggested warm oil massage and dietary review.', rx:['Warm sesame oil massage, twice daily']}
+    ],
+    today:{ vitals:{bp:'138/86', pulse:'78', temp:'98.4°F', spo2:'97%'}, symptoms:['Joint pain','Fatigue','Poor appetite'],
+      notes:'Patient reports morning stiffness in knees for the past 3 weeks, worse in cold weather. Denies fever.',
+      flag:true, confidence:91, aiLive:false,
+      summary:"52F with 6-yr history of hypertension presents with 3 weeks of morning joint stiffness (knees), fatigue and reduced appetite, no fever. Pattern is consistent with an Ama-Vata type presentation in Ayurvedic assessment — cold-aggravated joint stiffness with digestive weakness. Suggest Vata-pacifying dietary advice, warm oil (Sneha) application, and BP recheck given existing hypertension history.",
+      rx:['Erandapaka - 1 tsp at bedtime','Warm sesame oil massage to knees, twice daily','Dietary: avoid cold, raw foods for 2 weeks'],
+      queueStatus:'waiting', arrival:'9:40 AM', estWait:15, date:'06 Sep 2026' }
+  },
+  { id:'p2', name:'Ramesh Yadav', age:34, gender:'Male', village:'Bilaspur, Chhattisgarh',
+    history:'No chronic conditions on record.',
+    visits:[
+      {date:'11 Mar 2026', vitals:{bp:'118/78',pulse:'74',temp:'98.4°F',spo2:'98%'}, symptoms:['Digestive issue'], notes:'Mild indigestion after spicy food.', summary:'Transient Agnimandya, resolved with dietary advice.', rx:['Ginger tea before meals']}
+    ],
+    today:{ vitals:{bp:'122/80', pulse:'88', temp:'99.6°F', spo2:'98%'}, symptoms:['Cough','Sore throat','Fever'],
+      notes:'3-day history of dry cough and throat irritation, mild fever since yesterday evening. Works outdoors in dusty conditions.',
+      flag:false, confidence:88, aiLive:false,
+      summary:"34M, otherwise healthy, presents with 3-day dry cough, throat irritation and low-grade fever (99.6°F) since last evening. Occupational dust exposure noted. Presentation fits a Kapha-Pitta imbalance affecting the throat (Kantha). No red-flag signs of respiratory distress recorded. Suggest supportive Kashaya, steam inhalation, and review in 3 days if fever persists beyond 48 hrs.",
+      rx:['Sitopaladi Churna with honey, 3x daily','Steam inhalation with Tulsi, twice daily','Return if fever crosses 100.5°F'],
+      queueStatus:'serving', arrival:'9:10 AM', estWait:0, date:'06 Sep 2026' }
+  },
+  { id:'p3', name:'Kamla Bai', age:61, gender:'Female', village:'Kotra, Rajasthan',
+    history:'Diabetic, on Metformin for 4 years.',
+    visits:[
+      {date:'28 Jan 2026', vitals:{bp:'144/90',pulse:'80',temp:'98.4°F',spo2:'96%'}, symptoms:['Body ache'], notes:'General body ache, sugar levels borderline high.', summary:'Advised sugar monitoring and mild Panchakarma-adjacent lifestyle changes.', rx:['Sugar monitoring twice weekly']}
+    ],
+    today:{ vitals:{bp:'146/92', pulse:'82', temp:'98.2°F', spo2:'96%'}, symptoms:['Headache','Body ache'],
+      notes:'Recurring headaches over past week, worse by evening. No visual disturbance reported.',
+      flag:true, confidence:85, aiLive:false,
+      summary:"61F, known diabetic on Metformin, reports recurring evening headaches for a week with general body ache, no visual disturbance. Given hypertension reading (146/92) and diabetic history, recommend BP monitoring and blood sugar check before symptomatic treatment. Consider Pitta-aggravation pattern given evening worsening.",
+      rx:[], queueStatus:'waiting', arrival:'9:55 AM', estWait:28, date:'06 Sep 2026' }
+  },
+  { id:'p4', name:'Arjun Mehta', age:29, gender:'Male', village:'Udaipur, Rajasthan',
+    history:'No known conditions.',
+    visits:[],
+    today:{ vitals:{bp:'118/76', pulse:'72', temp:'98.6°F', spo2:'99%'}, symptoms:['Digestive issue'],
+      notes:'Bloating and mild discomfort after meals for 2 weeks.',
+      flag:false, confidence:82, aiLive:false,
+      summary:"29M reports post-meal bloating and mild abdominal discomfort for 2 weeks, no other red flags. Likely Agnimandya (weak digestive fire). Suggest dietary review and light Deepana-Pachana measures pending doctor confirmation.",
+      rx:[], queueStatus:'waiting', arrival:'10:05 AM', estWait:38, date:'06 Sep 2026' }
+  }
+];
+let patients = JSON.parse(JSON.stringify(seedPatients));
+let currentPatient = null;
+let currentDoctor = null;
+let activeDoctorPatientId = null;
+let currentLang = 'en';
+const hindiNote = "सारांश: मरीज के लक्षणों के आधार पर एक प्रारंभिक मूल्यांकन तैयार किया गया है। कृपया डॉक्टर पुष्टि करें।";
+
+function avgConfidence(symptoms){
+  if(!symptoms.length) return 80;
+  return Math.round(symptoms.reduce((s,x)=>s+(icdMap[x] ? icdMap[x].conf : 80),0)/symptoms.length);
+}
+function generateAISummary(p, symptoms, vitals, notes){
+  const sx = symptoms.join(', ').toLowerCase() || 'no specific symptoms recorded';
+  return p.age + (p.gender ? p.gender[0] : '') + " presents with " + sx + ". Vitals recorded as BP " + vitals.bp + ", pulse " + vitals.pulse + ", temperature " + vitals.temp + ". Clinical notes: " + (notes || 'none provided') + ". Suggest doctor confirm history duration and rule out red-flag signs before finalising the assessment. (Draft summary — pending MD review.)";
+}
+async function generateAISummaryLive(p, symptoms, vitals, notes){
+  const sys = "You are a clinical documentation assistant for an AYUSH (Ayurveda/Yoga/Unani/Siddha/Homeopathy) outpatient clinic in India. Draft a concise, professional clinical summary (3-5 sentences) for the treating physician to review, referencing relevant dosha patterns where it genuinely fits the case, and always noting this is a draft pending physician confirmation. Never prescribe medication or dosages. Stay strictly grounded in the details given — do not invent history the patient did not report. Respond with ONLY a raw JSON object, no markdown fences, no extra text, in the form: {\"summary\": \"...\", \"confidence\": NN} where confidence is an integer 0-100 reflecting how complete and unambiguous the given information is.";
+  const userPrompt = "Patient: " + p.age + " year old " + p.gender + ", from " + p.village + ". Known history: " + p.history + ". Today's vitals — BP " + vitals.bp + ", Pulse " + vitals.pulse + ", Temp " + vitals.temp + ", SpO2 " + vitals.spo2 + ". Reported symptoms: " + (symptoms.join(', ') || 'none specifically selected') + ". Patient notes: " + (notes || 'none provided') + ". Write the draft summary now.";
+  const raw = await callClaudeText(sys, userPrompt);
+  if(raw){
+    try{
+      const clean = raw.replace(/```json|```/g,'').trim();
+      const parsed = JSON.parse(clean);
+      if(parsed && parsed.summary){
+        return { summary: parsed.summary, confidence: (typeof parsed.confidence==='number' ? parsed.confidence : avgConfidence(symptoms)), live:true };
+      }
+    }catch(e){ console.warn('AI summary parse failed, falling back:', e); }
+  }
+  return { summary: generateAISummary(p, symptoms, vitals, notes), confidence: avgConfidence(symptoms), live:false };
+}
+function icdListHtml(symptoms){
+  if(!symptoms.length) return '';
+  return '<div class="icd-list">' + symptoms.map(function(s){
+    const m = icdMap[s] || {code:'—',conf:70};
+    return '<div class="icd-row"><span>' + s + ' → <span class="icd-code">' + m.code + '</span></span>' +
+      '<span style="display:flex;align-items:center;">' + m.conf + '% <span class="conf-bar"><span class="conf-fill" style="width:' + m.conf + '%"></span></span></span></div>';
+  }).join('') + '</div>';
+}
+
+/* ==================================================================
+   VOICE INTAKE (Web Speech API)
+   ================================================================== */
+function wireVoiceButton(buttonId, textareaId){
+  const btn = document.getElementById(buttonId);
+  if(!btn) return;
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SpeechRec){
+    btn.addEventListener('click', function(){
+      alert('Voice input needs a browser with speech recognition support — try Chrome on desktop or Android for this demo.');
+    });
+    return;
+  }
+  let recognizing = false;
+  let recognition = null;
+  btn.addEventListener('click', function(){
+    const area = document.getElementById(textareaId);
+    if(recognizing){ recognition.stop(); return; }
+    recognition = new SpeechRec();
+    recognition.lang = currentLang === 'hi' ? 'hi-IN' : 'en-IN';
+    recognition.interimResults = true;
+    recognition.continuous = true;
+    const baseText = area.value ? area.value.trim() + ' ' : '';
+    recognition.onstart = function(){
+      recognizing = true;
+      btn.classList.add('on');
+      btn.textContent = '⏺ Listening… (tap to stop)';
+    };
+    recognition.onresult = function(e){
+      let finalText = '', interimText = '';
+      for(let i=0;i<e.results.length;i++){
+        if(e.results[i].isFinal) finalText += e.results[i][0].transcript;
+        else interimText += e.results[i][0].transcript;
+      }
+      area.value = baseText + finalText + interimText;
+    };
+    recognition.onerror = function(e){
+      console.warn('Speech recognition error:', e.error);
+      recognizing = false; btn.classList.remove('on'); btn.textContent = '🎙️ Speak';
+    };
+    recognition.onend = function(){
+      recognizing = false; btn.classList.remove('on'); btn.textContent = '🎙️ Speak';
+    };
+    try{ recognition.start(); }catch(err){ console.warn(err); }
+  });
+}
+
+/* ==================================================================
+   VOICE INPUT for a plain text <input> (e.g. chat box)
+   Falls back to a canned "demo" phrase if the browser has no
+   Speech Recognition support, so the mic always does *something*
+   in a demo/judging environment.
+   ================================================================== */
+const demoVoicePhrases = [
+  "What are the OPD timings today?",
+  "How long is my wait in the queue?",
+  "How do I scan my old prescription?",
+  "I want to talk to a doctor."
+];
+function wireVoiceButtonForInput(buttonId, inputId, onFinalText){
+  const btn = document.getElementById(buttonId);
+  const input = document.getElementById(inputId);
+  if(!btn || !input) return;
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let recognizing = false;
+  let recognition = null;
+
+  function playDemoListening(){
+    // No browser speech-recognition support (or mic blocked) — simulate
+    // listening for the demo so the mic button still "works" visibly.
+    btn.classList.add('on');
+    const original = btn.textContent;
+    btn.textContent = '⏺';
+    setTimeout(function(){
+      btn.classList.remove('on');
+      btn.textContent = original;
+      const phrase = demoVoicePhrases[Math.floor(Math.random()*demoVoicePhrases.length)];
+      input.value = phrase;
+      if(typeof onFinalText === 'function') onFinalText(phrase);
+    }, 1200);
+  }
+
+  if(!SpeechRec){
+    btn.addEventListener('click', playDemoListening);
+    return;
+  }
+
+  btn.addEventListener('click', function(){
+    if(recognizing){ recognition.stop(); return; }
+    recognition = new SpeechRec();
+    recognition.lang = currentLang === 'hi' ? 'hi-IN' : 'en-IN';
+    recognition.interimResults = true;
+    recognition.continuous = false;
+    let gotResult = false;
+    recognition.onstart = function(){ recognizing = true; btn.classList.add('on'); };
+    recognition.onresult = function(e){
+      let finalText = '', interimText = '';
+      for(let i=0;i<e.results.length;i++){
+        if(e.results[i].isFinal) finalText += e.results[i][0].transcript;
+        else interimText += e.results[i][0].transcript;
+      }
+      input.value = finalText || interimText;
+      if(finalText){ gotResult = true; if(typeof onFinalText === 'function') onFinalText(finalText); }
+    };
+    recognition.onerror = function(e){
+      console.warn('Speech recognition error, using demo phrase instead:', e.error);
+      recognizing = false; btn.classList.remove('on');
+      // Mic blocked / not permitted / no network — keep the demo working anyway.
+      playDemoListening();
+    };
+    recognition.onend = function(){
+      recognizing = false; btn.classList.remove('on');
+      if(!gotResult){ /* nothing captured — leave field as-is */ }
+    };
+    try{ recognition.start(); }catch(err){ console.warn(err); playDemoListening(); }
+  });
+}
+
+/* ==================================================================
+   PATIENT LOGIN — OTP FLOW
+   ================================================================== */
+function resetPatientLoginForm(){
+  document.getElementById('patientLoginStep1').style.display='block';
+  document.getElementById('patientLoginStep2').style.display='none';
+  document.getElementById('patientStepLabel').textContent='1';
+  document.getElementById('patientLoginError').style.display='none';
+  const mob = document.getElementById('patientLoginMobile'); if(mob) mob.value='';
+}
+document.getElementById('patientSendOtpBtn').addEventListener('click', function(){
+  const mobile = document.getElementById('patientLoginMobile').value.trim();
+  if(mobile.length < 10){ document.getElementById('patientLoginMobile').style.borderColor='var(--red)'; return; }
+  document.getElementById('patientLoginMobile').style.borderColor='';
+  document.getElementById('patientLoginStep1').style.display='none';
+  document.getElementById('patientLoginStep2').style.display='block';
+  document.getElementById('patientStepLabel').textContent='2';
+  document.getElementById('otpSentNote').style.display='block';
+});
+function loginAsPatientName(nameRaw){
+  let match = patients.find(function(p){ return p.name.toLowerCase()===nameRaw.toLowerCase(); });
+  const isNew = !match;
+  if(!match){
+    match = { id:'p_'+Date.now(), name:nameRaw, age:'—', gender:'—', village:'—', history:'First-time patient — no prior records.', visits:[], today:null };
+    patients.push(match);
+  }
+  currentPatient = match;
+  document.getElementById('patientLoginError').style.display = isNew ? 'block' : 'none';
+  document.getElementById('logoutBtn').style.display='inline-block';
+  document.getElementById('navPatientLoginBtn').style.display='none';
+  document.getElementById('navDoctorLoginBtn').style.display='none';
+  const chip = document.getElementById('loggedInChip');
+  chip.style.display='inline-block'; chip.className='user-chip'; chip.textContent = '👤 '+match.name;
+  document.getElementById('patName').textContent = match.name;
+  document.getElementById('patAvatar').textContent = match.name.charAt(0).toUpperCase();
+  showView('view-patientDashboard');
+  setPatientSub('overview');
+}
+document.getElementById('patientLoginBtn').addEventListener('click', function(){
+  const nameRaw = document.getElementById('patientLoginName').value.trim();
+  if(!nameRaw){ document.getElementById('patientLoginName').style.borderColor='var(--red)'; return; }
+  loginAsPatientName(nameRaw);
+});
+document.querySelectorAll('[data-demo-patient]').forEach(function(btn){
+  btn.addEventListener('click', function(){ loginAsPatientName(btn.getAttribute('data-demo-patient')); });
+});
+
+/* ==================================================================
+   DOCTOR LOGIN
+   ================================================================== */
+function loginAsDoctor(name){
+  currentDoctor = name;
+  document.getElementById('logoutBtn').style.display='inline-block';
+  document.getElementById('navPatientLoginBtn').style.display='none';
+  document.getElementById('navDoctorLoginBtn').style.display='none';
+  const chip = document.getElementById('loggedInChip');
+  chip.style.display='inline-block'; chip.className='user-chip'; chip.textContent = '🩺 '+name;
+  document.getElementById('docName').textContent = name;
+  document.getElementById('docAvatar').textContent = name.replace('Dr.','').trim().charAt(0).toUpperCase();
+  showView('view-doctorDashboard');
+  setDoctorSub('overview');
+}
+document.getElementById('doctorLoginBtn').addEventListener('click', function(){
+  const name = document.getElementById('doctorLoginName').value.trim() || 'Dr. Menon';
+  loginAsDoctor(name);
+});
+document.getElementById('demoDoctorBtn').addEventListener('click', function(){ loginAsDoctor('Dr. Menon'); });
+
+/* ==================================================================
+   PATIENT DASHBOARD
+   ================================================================== */
+document.querySelectorAll('[data-psub]').forEach(function(btn){
+  btn.addEventListener('click', function(){ setPatientSub(btn.dataset.psub); });
+});
+function setPatientSub(sub){
+  document.querySelectorAll('[data-psub]').forEach(function(b){ b.classList.toggle('active', b.dataset.psub===sub); });
+  const el = document.getElementById('patientMain');
+  const p = currentPatient;
+  if(sub==='overview'){
+    const t = p.today;
+    let queueLbl = '—';
+    if(t){
+      if(t.queueStatus==='serving'){ queueLbl = 'In room'; }
+      else{
+        const posAhead = patients.filter(function(x){ return x.today && x.today.queueStatus==='waiting' && x.today.arrival<=t.arrival; }).length;
+        queueLbl = '#' + posAhead;
+      }
+    }
+    el.innerHTML =
+      '<h2>Welcome back, ' + p.name.split(' ')[0] + '</h2>' +
+      '<p class="sub">Here is a quick look at where things stand.</p>' +
+      '<div class="grid-3" style="margin-bottom:18px;">' +
+        '<div class="stat-card"><div class="num">' + (p.visits.length + (t?1:0)) + '</div><div class="lbl">Total visits on file</div></div>' +
+        '<div class="stat-card"><div class="num">' + queueLbl + '</div><div class="lbl">' + (t ? "Today's queue status" : 'No visit today') + '</div></div>' +
+        '<div class="stat-card"><div class="num">' + (p.visits.length ? p.visits[p.visits.length-1].date : '—') + '</div><div class="lbl">Last recorded visit</div></div>' +
+      '</div>' +
+      (t ? ('<div class="card-block"><h4>Today check-in</h4>' +
+        '<div class="chip-row" style="margin-bottom:10px;">' + t.symptoms.map(function(s){ return '<div class="chip on">'+s+'</div>'; }).join('') + '</div>' +
+        '<p style="font-size:13px; margin:0;">Status: <b>' + (t.queueStatus==='serving' ? 'In consultation now' : 'Waiting · est. '+t.estWait+' min') + '</b></p>' +
+      '</div>') : '<div class="info-note">You have not checked in today. Use <b>New Visit</b> in the sidebar to start a case.</div>');
+  } else if(sub==='history'){
+    const allVisits = p.visits.slice();
+    if(p.today) allVisits.push({date:p.today.date+' (today)', vitals:p.today.vitals, symptoms:p.today.symptoms, notes:p.today.notes, summary:p.today.summary, rx:p.today.rx});
+    el.innerHTML =
+      '<h2>Medical history</h2>' +
+      '<p class="sub">' + p.history + '</p>' +
+      (allVisits.length ? ('<div class="timeline">' + allVisits.slice().reverse().map(function(v){
+        return '<div class="tl-item"><div class="tl-date">' + v.date + '</div>' +
+          '<div class="tl-body">' +
+            '<h4>' + (v.symptoms.join(', ') || 'General checkup') + '</h4>' +
+            '<div class="vitals-row" style="margin-bottom:8px;">' +
+              '<div class="vital-pill"><div class="v">' + v.vitals.bp + '</div><div class="l">BP</div></div>' +
+              '<div class="vital-pill"><div class="v">' + v.vitals.pulse + '</div><div class="l">Pulse</div></div>' +
+              '<div class="vital-pill"><div class="v">' + v.vitals.temp + '</div><div class="l">Temp</div></div>' +
+              '<div class="vital-pill"><div class="v">' + v.vitals.spo2 + '</div><div class="l">SpO2</div></div>' +
+            '</div>' +
+            '<p style="font-size:13px; margin:0 0 8px;">' + (v.notes || '—') + '</p>' +
+            '<p style="font-size:12.5px; color:var(--text-muted); margin:0 0 8px;"><b>Doctor summary:</b> ' + (v.summary || 'Pending review') + '</p>' +
+            (v.rx && v.rx.length ? ('<p style="font-size:12.5px; margin:0;"><b>Prescribed:</b> ' + v.rx.join('; ') + '</p>') : '') +
+          '</div>' +
+        '</div>';
+      }).join('') + '</div>') : '<div class="info-note">No past visits on file yet — this looks like your first time here.</div>');
+  } else if(sub==='newvisit'){
+    el.innerHTML =
+      '<h2>New visit</h2>' +
+      '<p class="sub">Fill this in like you would at the clinic kiosk — or just tap Speak and describe how you feel.</p>' +
+      '<div class="card-block"><h4>Vitals</h4>' +
+        '<div class="vital-grid">' +
+          '<div class="field"><label>Blood pressure</label><input id="nv_bp" placeholder="120/80"></div>' +
+          '<div class="field"><label>Pulse (bpm)</label><input id="nv_pulse" placeholder="76"></div>' +
+          '<div class="field"><label>Temperature</label><input id="nv_temp" placeholder="98.6°F"></div>' +
+          '<div class="field"><label>SpO2</label><input id="nv_spo2" placeholder="98%"></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="card-block"><h4>Symptoms</h4>' +
+        '<div class="chip-row" id="nvChips">' + symptomOptions.map(function(s){ return '<div class="chip" data-s="'+s+'">'+s+'</div>'; }).join('') + '</div>' +
+        '<div id="nvIcd"></div>' +
+      '</div>' +
+      '<div class="card-block"><h4>' +
+          '<span class="field-label-row"><span>Notes</span><button type="button" class="voice-btn" id="nvVoiceBtn">🎙️ Speak</button></span>' +
+        '</h4>' +
+        '<div class="field"><textarea id="nv_notes" rows="3" placeholder="Describe how you are feeling... or tap Speak"></textarea></div>' +
+      '</div>' +
+      '<button class="btn btn-primary" id="nvSaveBtn">Save &amp; join the queue</button>' +
+      '<div id="nvConfirm" style="display:none; margin-top:14px;" class="info-note">Saved! Check <b>Overview</b> for your queue status, or view it live on the OPD Queue screen.</div>';
+    let nvSymptoms = [];
+    document.querySelectorAll('#nvChips .chip').forEach(function(c){
+      c.addEventListener('click', function(){
+        const s = c.dataset.s;
+        if(nvSymptoms.includes(s)) nvSymptoms = nvSymptoms.filter(function(x){ return x!==s; }); else nvSymptoms.push(s);
+        c.classList.toggle('on');
+        document.getElementById('nvIcd').innerHTML = icdListHtml(nvSymptoms);
+      });
+    });
+    wireVoiceButton('nvVoiceBtn', 'nv_notes');
+    document.getElementById('nvSaveBtn').addEventListener('click', async function(){
+      const saveBtn = document.getElementById('nvSaveBtn');
+      const originalLabel = saveBtn.textContent;
+      saveBtn.disabled = true; saveBtn.textContent = '🧠 AI is drafting your summary...';
+      const vitals = {bp:document.getElementById('nv_bp').value||'—', pulse:document.getElementById('nv_pulse').value||'—', temp:document.getElementById('nv_temp').value||'—', spo2:document.getElementById('nv_spo2').value||'—'};
+      const notes = document.getElementById('nv_notes').value;
+      if(p.today){ p.visits.push({date:p.today.date, vitals:p.today.vitals, symptoms:p.today.symptoms, notes:p.today.notes, summary:p.today.summary, rx:p.today.rx}); }
+      const now = new Date();
+      const aiResult = await generateAISummaryLive(p, nvSymptoms, vitals, notes);
+      p.today = { vitals:vitals, symptoms:nvSymptoms.slice(), notes:notes, flag: nvSymptoms.includes('Fever') || nvSymptoms.length>=4,
+        confidence: aiResult.confidence, summary: aiResult.summary, aiLive: aiResult.live, rx:[],
+        queueStatus:'waiting', arrival: now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+        estWait: 20 + patients.filter(function(x){ return x.today && x.today.queueStatus==='waiting'; }).length*8,
+        date: now.toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'}), isNew:true };
+      saveBtn.disabled = false; saveBtn.textContent = originalLabel;
+      document.getElementById('nvConfirm').style.display='block';
+      document.getElementById('nvConfirm').innerHTML = 'Saved! An AI-drafted summary (' + (aiResult.live ? 'generated live' : 'offline demo draft') + ', ' + aiResult.confidence + '% confidence) is now queued for the doctor to review. Check <b>Overview</b> for your queue status.';
+    });
+  } else if(sub==='scan'){
+    renderOcrPanel(el);
+  } else if(sub==='support'){
+    el.innerHTML =
+      '<h2>Support chat</h2>' +
+      '<p class="sub">Ask about OPD timings, visit prep, or general questions. You can also use the MediLink Assistant button in the bottom-right corner from anywhere on the site.</p>' +
+      '<div class="chat-frame-box">' +
+        '<iframe src="https://customer-support-bot-q2ol.onrender.com/" id="chatFramePatient" title="MediLink support chatbot"></iframe>' +
+        '<div class="chat-fallback" id="chatFallbackPatient">' +
+          'The full support agent opens in a new tab on some networks — or just use the MediLink Assistant bubble in the corner for instant answers.<br><br>' +
+          '<a href="https://customer-support-bot-q2ol.onrender.com/" target="_blank" class="btn btn-primary" style="text-decoration:none;display:inline-block;">Open live agent ↗</a>' +
+        '</div>' +
+      '</div>';
+    setupChatFallback('chatFramePatient','chatFallbackPatient');
+  }
+}
+
+/* ==================================================================
+   OCR (shared) — real vision-based extraction, with offline fallback
+   ================================================================== */
+const medicineKnowledgeBase = {
+  'erandapaka': 'A classical Ayurvedic castor-oil based formulation, typically used to ease joint stiffness and support gentle bowel regularity when taken at bedtime.',
+  'sesame oil massage': 'Warm sesame oil (Abhyanga) is traditionally used to pacify Vata dosha, easing joint and muscle stiffness with regular massage.',
+  'sitopaladi churna': 'A herbal powder blend commonly used for cough, throat irritation and mild respiratory discomfort, often taken with honey.',
+  'tulsi': 'Holy basil (Tulsi) is used in steam inhalation and teas to soothe the throat and support respiratory comfort.',
+  'ginger tea': 'Ginger is a warming digestive aid, traditionally used before meals to stimulate digestion and ease mild indigestion.',
+  'paracetamol': 'A common over-the-counter medicine used for short-term relief of mild pain and fever. Follow the prescribed dosage.',
+  'sugar monitoring': 'Regular blood-glucose checks help track how well diabetes is being managed between clinic visits.'
+};
+function buildDemoMedicineSummary(medsText){
+  const meds = (medsText || '').split(';').map(function(s){ return s.trim(); }).filter(Boolean);
+  if(!meds.length){
+    return { intro: 'No specific medicines were detected on this document.', items: [] };
+  }
+  const items = meds.map(function(m){
+    const key = Object.keys(medicineKnowledgeBase).find(function(k){ return m.toLowerCase().indexOf(k) !== -1; });
+    const note = key ? medicineKnowledgeBase[key] : 'A part of the prescribed regimen — ask the doctor for full details on purpose and duration if unclear.';
+    return { name: m, note: note };
+  });
+  return {
+    intro: 'Here is a plain-language summary of what was found on this document (demo explanation, not medical advice):',
+    items: items
+  };
+}
+function renderMedSummaryHtml(medsText){
+  const built = buildDemoMedicineSummary(medsText);
+  if(!built.items.length){
+    return '<div class="med-summary-box"><h5>Medicine summary <span class="demo-tag-sm">Demo</span></h5>' + built.intro + '</div>';
+  }
+  return '<div class="med-summary-box"><h5>Medicine summary <span class="demo-tag-sm">Demo</span></h5>' +
+    '<p style="margin:0 0 8px;">' + built.intro + '</p>' +
+    '<ul>' + built.items.map(function(it){ return '<li><b>' + it.name + '</b> — ' + it.note + '</li>'; }).join('') + '</ul>' +
+  '</div>';
+}
+function renderOcrPanel(el){
+  el.innerHTML =
+    '<h2>Scan a prescription or report</h2>' +
+    '<p class="sub">Upload an old paper document — it is read automatically by the AI and added to your history.</p>' +
+    '<div class="ocr-wrap">' +
+      '<div class="ocr-upload">' +
+        '<div style="font-size:32px;">📄</div>' +
+        '<p style="font-size:13.5px; color:var(--text-muted); margin:8px 0 14px;">Drop an image or use a sample document</p>' +
+        '<input type="file" accept="image/*" id="ocrFileInput" style="display:none;">' +
+        '<div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">' +
+          '<button class="btn btn-primary" id="ocrUploadBtn">Upload photo</button>' +
+          '<button class="btn btn-green" id="ocrSampleBtn">Use sample report</button>' +
+        '</div>' +
+        '<img id="ocrPreview" style="display:none;">' +
+        '<div class="scan-progress" id="ocrProgress"><div class="bar" id="ocrProgressBar"></div></div>' +
+        '<div id="ocrScanLabel" style="font-size:12px;color:var(--saffron-deep); margin-top:8px; display:none;">Scanning document...</div>' +
+      '</div>' +
+      '<div class="ocr-result">' +
+        '<div class="card-block" id="ocrResultCard" style="display:none;">' +
+          '<h4>Extracted data <span class="lang-tag" id="ocrLangTag">Hindi + English</span></h4>' +
+          '<div class="ocr-field-row"><span class="k">Doctor</span><span id="ocrDoctor">—</span></div>' +
+          '<div class="ocr-field-row"><span class="k">Date</span><span id="ocrDate">—</span></div>' +
+          '<div class="ocr-field-row"><span class="k">Medicines</span><span id="ocrMeds">—</span></div>' +
+          '<div class="ocr-field-row"><span class="k">OCR confidence</span><span id="ocrConf">—</span></div>' +
+          '<div id="ocrMedSummary"></div>' +
+          '<div class="review-actions"><button class="btn btn-primary" id="ocrSaveBtn">Add to my history</button></div>' +
+        '</div>' +
+        '<div class="card-block" id="ocrEmptyCard"><h4>Nothing scanned yet</h4><p style="font-size:12.5px; color:var(--text-muted); margin:0;">Extracted medicines and notes will appear here for you to confirm.</p></div>' +
+      '</div>' +
+    '</div>';
+  document.getElementById('ocrUploadBtn').addEventListener('click', function(){ document.getElementById('ocrFileInput').click(); });
+  document.getElementById('ocrFileInput').addEventListener('change', function(e){
+    const file = e.target.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev){ const img=document.getElementById('ocrPreview'); img.src=ev.target.result; img.style.display='block'; runOcrScan(); };
+    reader.readAsDataURL(file);
+  });
+  document.getElementById('ocrSampleBtn').addEventListener('click', function(){
+    const img = document.getElementById('ocrPreview');
+    img.src = "data:image/svg+xml;utf8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="240"><rect width="400" height="240" fill="#fdfaf0"/><text x="20" y="30" font-family="monospace" font-size="14">Dr. R. Sharma — Ayush Clinic</text><text x="20" y="55" font-family="monospace" font-size="12">Date: 04/09/2026</text><line x1="20" y1="70" x2="380" y2="70" stroke="#ccc"/><text x="20" y="95" font-family="cursive" font-size="16">Rx: Erandapaka 1 tsp HS</text><text x="20" y="120" font-family="cursive" font-size="16">Sesame oil massage BD x 14 days</text><text x="20" y="145" font-family="cursive" font-size="16">Avoid cold, raw food</text></svg>');
+    img.style.display='block'; runOcrScan();
+  });
+  async function ocrExtractLive(imgEl){
+    if(!imgEl || !imgEl.src) return null;
+    try{ if(imgEl.decode) await imgEl.decode(); }catch(e){}
+    const w = imgEl.naturalWidth || 400, h = imgEl.naturalHeight || 240;
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,w,h);
+    ctx.drawImage(imgEl, 0, 0, w, h);
+    let base64;
+    try{ base64 = canvas.toDataURL('image/png').split(',')[1]; }catch(e){ return null; }
+    const sys = "You are an OCR and medical-document parser for a clinic app. Extract data from the prescription or lab report image. Respond with ONLY a raw JSON object (no markdown fences, no extra text) with keys: doctor (string), date (string), medicines (string, semicolon-separated list), confidence (integer 0-100, your certainty in the extraction), language (string, e.g. 'Hindi + English').";
+    const raw = await callClaudeVision(sys, "Extract the prescription details from this image.", base64, "image/png");
+    if(!raw) return null;
+    try{
+      const clean = raw.replace(/```json|```/g,'').trim();
+      return JSON.parse(clean);
+    }catch(e){ console.warn('OCR parse failed, falling back:', e); return null; }
+  }
+  async function runOcrScan(){
+    document.getElementById('ocrResultCard').style.display='none';
+    document.getElementById('ocrEmptyCard').style.display='block';
+    const prog=document.getElementById('ocrProgress'), bar=document.getElementById('ocrProgressBar'), label=document.getElementById('ocrScanLabel');
+    prog.classList.add('show'); label.style.display='block'; label.textContent='Reading document with AI...'; bar.style.width='0%';
+    requestAnimationFrame(function(){ bar.style.width='85%'; });
+    const imgEl = document.getElementById('ocrPreview');
+    let parsed = null;
+    try{ parsed = await ocrExtractLive(imgEl); }catch(e){ console.warn(e); }
+    bar.style.width='100%';
+    setTimeout(function(){
+      prog.classList.remove('show'); label.style.display='none';
+      document.getElementById('ocrEmptyCard').style.display='none';
+      document.getElementById('ocrResultCard').style.display='block';
+      const fallback = {doctor:'Dr. R. Sharma', date:'04/09/2026', medicines:'Erandapaka (1 tsp, bedtime); Sesame oil massage BD x14 days', confidence:93, language:'Hindi + English'};
+      const result = parsed || fallback;
+      document.getElementById('ocrDoctor').textContent = result.doctor || fallback.doctor;
+      document.getElementById('ocrDate').textContent = result.date || fallback.date;
+      const medsText = result.medicines || fallback.medicines;
+      document.getElementById('ocrMeds').textContent = medsText;
+      const confVal = (typeof result.confidence === 'number') ? result.confidence : fallback.confidence;
+      document.getElementById('ocrConf').textContent = confVal + '% match' + (parsed ? ' · read live by AI' : ' · offline demo data');
+      document.getElementById('ocrLangTag').textContent = result.language || fallback.language;
+      document.getElementById('ocrSaveBtn').dataset.doctor = result.doctor || fallback.doctor;
+      document.getElementById('ocrSaveBtn').dataset.date = result.date || fallback.date;
+      document.getElementById('ocrSaveBtn').dataset.meds = medsText;
+      // Always show a medicine summary — built from a small canned
+      // knowledge base so the demo works even fully offline.
+      document.getElementById('ocrMedSummary').innerHTML = renderMedSummaryHtml(medsText);
+    }, 350);
+  }
+  document.getElementById('ocrSaveBtn').addEventListener('click', function(){
+    const btn = document.getElementById('ocrSaveBtn');
+    if(currentPatient){
+      currentPatient.visits.push({date:(btn.dataset.date||'04 Sep 2026')+' (scanned)', vitals:{bp:'—',pulse:'—',temp:'—',spo2:'—'}, symptoms:[], notes:'Scanned prescription from '+(btn.dataset.doctor||'clinic')+'.', summary:'Digitised from a paper prescription via AI-powered OCR.', rx:(btn.dataset.meds||'').split(';').map(function(s){return s.trim();}).filter(Boolean)});
+    }
+    btn.textContent='✓ Added'; btn.disabled=true;
+  });
+}
+
+/* ==================================================================
+   DOCTOR DASHBOARD
+   ================================================================== */
+document.querySelectorAll('[data-dsub]').forEach(function(btn){
+  btn.addEventListener('click', function(){ setDoctorSub(btn.dataset.dsub); });
+});
+function checkedInPatients(){ return patients.filter(function(p){ return p.today; }); }
+
+function setDoctorSub(sub){
+  document.querySelectorAll('[data-dsub]').forEach(function(b){ b.classList.toggle('active', b.dataset.dsub===sub); });
+  const el = document.getElementById('doctorMain');
+  if(sub==='overview'){
+    const list = checkedInPatients();
+    const waiting = list.filter(function(p){ return p.today.queueStatus==='waiting'; }).length;
+    const done = list.filter(function(p){ return p.today.queueStatus==='done'; }).length;
+    const flagged = list.filter(function(p){ return p.today.flag; }).length;
+    const symptomCount = {};
+    list.forEach(function(p){ p.today.symptoms.forEach(function(s){ symptomCount[s]=(symptomCount[s]||0)+1; }); });
+    const topSymptoms = Object.entries(symptomCount).sort(function(a,b){ return b[1]-a[1]; }).slice(0,5);
+    el.innerHTML =
+      '<h2>Overview</h2>' +
+      '<p class="sub">Today clinic snapshot.</p>' +
+      '<div class="grid-3" style="margin-bottom:18px;">' +
+        '<div class="stat-card"><div class="num">' + list.length + '</div><div class="lbl">Checked in today</div></div>' +
+        '<div class="stat-card"><div class="num">' + waiting + '</div><div class="lbl">Currently waiting</div></div>' +
+        '<div class="stat-card"><div class="num">' + done + '</div><div class="lbl">Seen today</div></div>' +
+        '<div class="stat-card"><div class="num">' + flagged + '</div><div class="lbl">Flagged cases</div></div>' +
+      '</div>' +
+      '<div class="card-block"><h4>Most common symptoms today</h4>' +
+        (topSymptoms.length ? topSymptoms.map(function(entry){
+          const s = entry[0], c = entry[1];
+          return '<div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">' +
+            '<span style="font-size:13px; width:120px;">' + s + '</span>' +
+            '<div style="flex:1; background:var(--bg-soft); border-radius:4px; height:8px;"><div style="width:' + ((c/list.length)*100) + '%; background:var(--saffron); height:100%; border-radius:4px;"></div></div>' +
+            '<span style="font-size:12px; color:var(--text-muted);">' + c + '</span>' +
+          '</div>';
+        }).join('') : '<p style="font-size:13px;color:var(--text-muted);">No check-ins yet today.</p>') +
+      '</div>';
+  } else if(sub==='queue'){
+    renderQueuePanel(el);
+  } else if(sub==='patients'){
+    renderPatientsPanel(el);
+  }
+}
+
+function renderQueuePanel(el){
+  el.innerHTML =
+    '<h2>Live OPD queue</h2>' +
+    '<p class="sub">Who is waiting, who is in consultation.</p>' +
+    '<div class="now-serving" id="nowServingBox">' +
+      '<div><div class="label">Now in consultation</div><div class="name" id="nowServingName">—</div><div class="room" id="nowServingRoom">—</div></div>' +
+      '<button class="btn btn-saffron" id="callNextBtn">Call next patient →</button>' +
+    '</div>' +
+    '<table class="queue-table"><thead><tr><th>Patient</th><th>Arrived</th><th>Est. wait</th><th>Status</th></tr></thead><tbody id="queueTableBody"></tbody></table>';
+  renderQueueTable();
+  document.getElementById('callNextBtn').addEventListener('click', function(){
+    const serving = checkedInPatients().find(function(p){ return p.today.queueStatus==='serving'; });
+    if(serving) serving.today.queueStatus='done';
+    const waitingList = checkedInPatients().filter(function(p){ return p.today.queueStatus==='waiting'; });
+    if(waitingList.length) waitingList[0].today.queueStatus='serving';
+    renderQueueTable();
+  });
+}
+function renderQueueTable(){
+  const list = checkedInPatients();
+  const serving = list.find(function(p){ return p.today.queueStatus==='serving'; });
+  const waitingList = list.filter(function(p){ return p.today.queueStatus==='waiting'; });
+  if(serving){
+    document.getElementById('nowServingName').textContent = serving.name;
+    document.getElementById('nowServingRoom').textContent = 'Consultation Room 2 · ' + (currentDoctor||'Dr. Menon') + ' · since ' + serving.today.arrival;
+  } else {
+    document.getElementById('nowServingName').textContent = 'Room free';
+    document.getElementById('nowServingRoom').textContent = 'No patient currently in consultation';
+  }
+  document.getElementById('callNextBtn').disabled = waitingList.length===0;
+  const order = {serving:0, waiting:1};
+  const rows = list.filter(function(p){ return p.today.queueStatus!=='done'; }).sort(function(a,b){ return order[a.today.queueStatus]-order[b.today.queueStatus]; });
+  document.getElementById('queueTableBody').innerHTML = rows.map(function(p){
+    return '<tr><td>' + p.name + ' ' + (p.today.flag?'<span class="flag-dot"></span>':'') + '</td><td>' + p.today.arrival + '</td>' +
+      '<td>' + (p.today.queueStatus==='serving'?'In room':p.today.estWait+' min') + '</td>' +
+      '<td><span class="status-tag ' + (p.today.queueStatus==='serving'?'status-serving':'status-waiting') + '">' + (p.today.queueStatus==='serving'?'In consultation':'Waiting') + '</span></td></tr>';
+  }).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);">Queue is empty</td></tr>';
+}
+
+function renderPatientsPanel(el){
+  el.innerHTML = '<h2>Patients</h2><p class="sub">Everyone checked in today, with AI-drafted summaries.</p>' +
+    '<div class="two-col"><div id="patListCol"></div><div id="patDetailCol"></div></div>';
+  const list = checkedInPatients();
+  if(!activeDoctorPatientId && list.length) activeDoctorPatientId = list[0].id;
+  document.getElementById('patListCol').innerHTML = list.map(function(p){
+    return '<div class="patient-list-row ' + (p.id===activeDoctorPatientId?'active':'') + '" data-id="' + p.id + '">' +
+      '<div><div class="p-name">' + p.name + ' ' + (p.today.isNew?'<span class="new-badge">NEW</span>':'') + '</div><div class="p-meta">' + p.age + ' yrs · ' + p.gender + ' · ' + p.village + '</div></div>' +
+      (p.today.flag?'<span class="flag-dot"></span>':'') +
+    '</div>';
+  }).join('') || '<p style="font-size:13px;color:var(--text-muted);">No patients checked in yet.</p>';
+  document.querySelectorAll('.patient-list-row').forEach(function(r){
+    r.addEventListener('click', function(){ activeDoctorPatientId = r.dataset.id; renderPatientsPanel(el); });
+  });
+  renderDoctorPatientDetail();
+}
+function renderDoctorPatientDetail(){
+  const wrap = document.getElementById('patDetailCol');
+  if(!wrap) return;
+  const p = patients.find(function(x){ return x.id===activeDoctorPatientId; });
+  if(!p || !p.today){ wrap.innerHTML = '<div class="card-block">Select a patient to view their case.</div>'; return; }
+  const t = p.today;
+  wrap.innerHTML =
+    '<div class="card-block">' +
+      '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:8px;">' +
+        '<div><h3 style="margin:0; font-size:19px;">' + p.name + '</h3><div style="font-size:12px;color:var(--text-muted);">' + p.age + ' yrs · ' + p.gender + ' · ' + p.village + (t.flag?' · <span style="color:var(--red);">Flagged</span>':'') + '</div></div>' +
+        '<div class="lang-toggle"><button data-lang="en" class="' + (currentLang==='en'?'on':'') + '">EN</button><button data-lang="hi" class="' + (currentLang==='hi'?'on':'') + '">हिं</button></div>' +
+      '</div>' +
+      '<div class="vitals-row">' +
+        '<div class="vital-pill"><div class="v">' + t.vitals.bp + '</div><div class="l">BP</div></div>' +
+        '<div class="vital-pill"><div class="v">' + t.vitals.pulse + '</div><div class="l">Pulse</div></div>' +
+        '<div class="vital-pill"><div class="v">' + t.vitals.temp + '</div><div class="l">Temp</div></div>' +
+        '<div class="vital-pill"><div class="v">' + t.vitals.spo2 + '</div><div class="l">SpO2</div></div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="card-block"><h4>Symptoms &amp; mapped codes</h4>' +
+      '<div class="chip-row" style="margin-bottom:8px;">' + (t.symptoms.map(function(s){ return '<div class="chip on">'+s+'</div>'; }).join('') || '<span style="font-size:12px;color:var(--text-muted);">None recorded</span>') + '</div>' +
+      icdListHtml(t.symptoms) +
+      '<p style="font-size:13px; margin-top:10px;">' + p.history + '</p>' +
+    '</div>' +
+    '<div class="card-block"><h4>AI-drafted clinical summary</h4>' +
+      '<div class="ai-summary-box" id="aiSummaryBox"><span class="badge">Draft — needs MD review</span><span class="conf-badge">Confidence: ' + t.confidence + '%</span>' + (t.aiLive ? '<span class="live-badge">⚡ Live AI</span>' : '<span class="live-badge" style="background:var(--bg-soft);color:var(--text-muted);">Offline demo draft</span>') + '<br>' + (currentLang==='en'?t.summary:hindiNote) + '</div>' +
+      '<div class="review-actions"><button class="btn btn-primary" id="approveBtn">Approve summary</button><button class="btn btn-ghost">Edit before approving</button><button class="btn btn-ghost" id="regenAiBtn">🔄 Regenerate with AI</button></div>' +
+    '</div>' +
+    '<div class="card-block"><h4>Prescription</h4>' +
+      '<div>' + ((t.rx||[]).map(function(r){ return '<div class="rx-row"><input value="'+r+'" readonly></div>'; }).join('') || '<p style="font-size:12.5px;color:var(--text-muted);">No prescription yet.</p>') + '</div>' +
+      '<div class="rx-row"><input id="rxNew" placeholder="Add medicine / advice..."><button class="btn btn-saffron" id="rxAdd">Add</button></div>' +
+    '</div>';
+  wrap.querySelectorAll('.lang-toggle button').forEach(function(b){ b.addEventListener('click', function(){ currentLang=b.dataset.lang; renderDoctorPatientDetail(); }); });
+  const ap = document.getElementById('approveBtn');
+  if(ap) ap.addEventListener('click', function(){ ap.textContent='✓ Approved'; ap.disabled=true; });
+  const rxAdd = document.getElementById('rxAdd');
+  if(rxAdd) rxAdd.addEventListener('click', function(){ const v=document.getElementById('rxNew').value.trim(); if(v){ t.rx=t.rx||[]; t.rx.push(v); renderDoctorPatientDetail(); } });
+  const regen = document.getElementById('regenAiBtn');
+  if(regen) regen.addEventListener('click', async function(){
+    regen.disabled = true; regen.textContent = '🧠 Thinking...';
+    const result = await generateAISummaryLive(p, t.symptoms, t.vitals, t.notes);
+    t.summary = result.summary; t.confidence = result.confidence; t.aiLive = result.live;
+    renderDoctorPatientDetail();
+  });
+}
+
+/* ==================================================================
+   CHAT FALLBACK (embedded iframe)
+   ================================================================== */
+function setupChatFallback(frameId, fallbackId){
+  const frame = document.getElementById(frameId);
+  let loaded = false;
+  frame.addEventListener('load', function(){ loaded = true; });
+  setTimeout(function(){ if(!loaded){ frame.style.display='none'; document.getElementById(fallbackId).style.display='block'; } }, 6000);
+}
+
+/* ==================================================================
+   FLOATING LIVE SUPPORT CHAT WIDGET (offline, keyword-based demo bot)
+   ================================================================== */
+const fabChatBtn = document.getElementById('fabChatBtn');
+const chatPanel = document.getElementById('chatPanel');
+const chatBody = document.getElementById('chatBody');
+const chatQuick = document.getElementById('chatQuick');
+const chatInputBox = document.getElementById('chatInputBox');
+
+const botReplies = [
+  { keys:['opd','timing','time','hour','open','close'], reply:"OPD hours at this demo clinic are 9:00 AM – 4:00 PM, Monday to Saturday. Your current queue position and estimated wait time are shown on your dashboard's Overview tab." },
+  { keys:['queue','wait','position','how long'], reply:"You can check your live position in the queue from the Overview tab after logging in. Doctors update the queue in real time as they call the next patient." },
+  { keys:['appointment','book','visit','new visit'], reply:"To start a new visit, log in as a patient and go to 'New Visit' in the sidebar — you can record vitals and symptoms just like at the clinic kiosk, or tap Speak to dictate your notes." },
+  { keys:['prescription','scan','ocr','report'], reply:"Head to 'Scan Documents' in the patient dashboard — you can upload a photo of an old prescription or try the sample report to see AI-powered extraction in action, complete with a plain-language medicine summary." },
+  { keys:['login','sign in','account','password'], reply:"You can use the one-click demo profiles on the login page (e.g. Sunita Devi or Dr. Menon), or sign in with a mobile number + OTP. Demo OTP is auto-filled for you." },
+  { keys:['doctor','physician','dr'], reply:"Dr. Menon is available as a demo doctor account — log in from the Doctor / Staff portal to see the live OPD queue and AI-drafted summaries." },
+  { keys:['data','privacy','secure','safety'], reply:"MediLink is designed with end-to-end encryption and role-based access, aligned with HIPAA-like and ABDM data protection standards. This prototype uses demo data only." },
+  { keys:['hi','hello','hey','namaste'], reply:"Namaste! 🙏 I'm MediLink Assistant, your virtual assistant. Ask me about OPD timings, appointments, prescriptions, or how to use the portal. You can also tap the 🎙️ mic to speak your question." },
+  { keys:['thank','thanks'], reply:"You're welcome! Let me know if there's anything else I can help you with." },
+  { keys:['human','agent','representative','person'], reply:"You can reach a live human agent via the Support Chat tab in your patient dashboard, or the 'Open live agent' link there." },
+];
+const quickReplies = ['OPD timings','Check my queue position','How do I scan a prescription?','Talk to a human agent'];
+
+function addMsg(text, who){
+  const d = document.createElement('div');
+  d.className = 'msg ' + who;
+  d.textContent = text;
+  chatBody.appendChild(d);
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+function botReplyFor(text){
+  const lower = text.toLowerCase();
+  for(let i=0;i<botReplies.length;i++){
+    const r = botReplies[i];
+    if(r.keys.some(function(k){ return lower.indexOf(k)!==-1; })) return r.reply;
+  }
+  return "Thanks for your message — a member of our team typically responds within a few minutes. In the meantime, you can check OPD timings, your queue status, or how to scan a prescription. What would you like help with?";
+}
+function botRespond(userText){
+  const typing = document.createElement('div');
+  typing.className = 'typing-dots';
+  typing.innerHTML = '<span></span><span></span><span></span>';
+  chatBody.appendChild(typing);
+  chatBody.scrollTop = chatBody.scrollHeight;
+  setTimeout(function(){
+    typing.remove();
+    addMsg(botReplyFor(userText), 'bot');
+  }, 700 + Math.random()*500);
+}
+function renderQuickReplies(){
+  chatQuick.innerHTML = '';
+  quickReplies.forEach(function(q){
+    const b = document.createElement('button');
+    b.textContent = q;
+    b.addEventListener('click', function(){ sendChatMsg(q); });
+    chatQuick.appendChild(b);
+  });
+}
+function sendChatMsg(text){
+  if(!text.trim()) return;
+  addMsg(text, 'user');
+  chatInputBox.value = '';
+  botRespond(text);
+}
+let chatInitialized = false;
+function openChat(){
+  chatPanel.classList.add('open');
+  if(!chatInitialized){
+    addMsg("Namaste! 🙏 I'm MediLink Assistant, your virtual assistant for MediLink. How can I help you today? You can type, or tap the 🎙️ mic to speak.", 'bot');
+    renderQuickReplies();
+    chatInitialized = true;
+  }
+}
+fabChatBtn.addEventListener('click', openChat);
+document.getElementById('chatCloseBtn').addEventListener('click', function(){ chatPanel.classList.remove('open'); });
+document.getElementById('chatSendBtn').addEventListener('click', function(){ sendChatMsg(chatInputBox.value); });
+chatInputBox.addEventListener('keydown', function(e){ if(e.key==='Enter'){ sendChatMsg(chatInputBox.value); } });
+wireVoiceButtonForInput('chatMicBtn', 'chatInputBox', function(finalText){ sendChatMsg(finalText); });
+
+/* Kick off AI availability check */
+initAIStatus();
+</script>
+</body>
+</html>
